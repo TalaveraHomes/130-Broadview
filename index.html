@@ -68,16 +68,71 @@
     .selections-list { margin-top: 1.5rem; border-top: 1px solid #eee5d9; padding-top: 1rem; }
     .selections-list li { padding: .4rem 0; border-bottom: 1px dashed #eee5d9; }
 
-    /* Small helper states */
     .loader { color:#5a5a5a; font-size:.95rem; }
     .error { color:#9b2c2c; background:#fff5f5; border:1px solid #fed7d7; padding:.75rem 1rem; border-radius:8px; }
   </style>
+
+  <!-- Inline fallback JSON goes here. Paste your selections_data.json content between the tags -->
+  <script type="application/json" id="selections-data">
+  [
+    /* Example entry format; replace with your real JSON array
+    {
+      "name": "Exterior Paint",
+      "note": "Sherwin-Williams Alabaster",
+      "link": "https://example.com/exterior-paint",
+      "image": "selections/exterior-paint.png"
+    }
+    */
+  ]
+  </script>
+
   <script>
     function showSection(id) {
       document.querySelectorAll('.container section').forEach(s => s.classList.remove('active'));
       const el = document.getElementById(id);
       if (el) el.classList.add('active');
       if (history.pushState) { history.pushState(null, "", "#" + id); }
+    }
+
+    function jpgFallback(path) {
+      if (!path) return "";
+      return path.replace(/\.png$/i, ".jpg"); // use compressed JPGs if present
+    }
+
+    function buildSelections(items) {
+      const gallery = document.getElementById('selectionsGallery');
+      const list    = document.getElementById('selectionsList');
+      if (!Array.isArray(items)) throw new Error("Selections data must be an array");
+
+      // Gallery
+      gallery.innerHTML = items.map(it => {
+        const imgPath = jpgFallback(it.image || "");
+        const hasImg  = imgPath.length > 0;
+        const imgHtml = hasImg
+          ? `<img loading="lazy" src="${imgPath}" alt="${it.name}">`
+          : `<div class="placeholder">${it.name}</div>`;
+        const clickAttr   = it.link ? `onclick="window.open('${it.link}','_blank','noopener')"` : '';
+        const photoLink   = hasImg ? `<a href="${imgPath}" target="_blank" rel="noopener">View Photo</a>` : ``;
+        const detailsLink = it.link ? `<a href="${it.link}" target="_blank" rel="noopener">View Details</a>` : ``;
+
+        return `
+          <article class="card" ${clickAttr}>
+            <div class="thumb">${imgHtml}</div>
+            <div class="info">
+              <p class="title">${it.name || ""}</p>
+              ${it.note ? `<p class="meta">${it.note}</p>` : ``}
+              <div class="links">${[detailsLink, photoLink].filter(Boolean).join("&nbsp; ")}</div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // List
+      list.innerHTML = items.map(it => {
+        const note = it.note ? ` — ${it.note}` : '';
+        const link = it.link ? ` <a href="${it.link}" target="_blank" rel="noopener">(link)</a>` : '';
+        return `<li><strong>${it.name || ""}</strong>${note}${link}</li>`;
+      }).join('');
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -87,66 +142,31 @@
         a.addEventListener('click', (e) => { e.preventDefault(); showSection(a.getAttribute('data-section')); });
       });
 
-      // ----- Build Selections from selections_data.json -----
       const gallery = document.getElementById('selectionsGallery');
-      const list = document.getElementById('selectionsList');
-
-      function jpgFallback(path) {
-        if (!path) return "";
-        return path.replace(/\.png$/i, ".jpg"); // use compressed JPGs if present
-      }
-
-      // show loader while fetching
       gallery.innerHTML = '<p class="loader">Loading your selections…</p>';
 
-      fetch('selections_data.json?v=2') // cache-bust so updates show
-        .then(r => {
-          if (!r.ok) throw new Error('Missing selections_data.json at site root');
-          return r.json();
-        })
-        .then(items => {
-          // Gallery
-          gallery.innerHTML = items.map(it => {
-            const imgPath = jpgFallback(it.image || "");
-            const hasImg = imgPath.length > 0;
-            const imgHtml = hasImg
-              ? `<img loading="lazy" src="${imgPath}" alt="${it.name}">`
-              : `<div class="placeholder">${it.name}</div>`;
-            const clickAttr = it.link ? `onclick="window.open('${it.link}','_blank','noopener')"` : '';
-            const photoLink = hasImg ? `<a href="${imgPath}" target="_blank" rel="noopener">View Photo</a>` : ``;
-            const detailsLink = it.link ? `<a href="${it.link}" target="_blank" rel="noopener">View Details</a>` : ``;
-
-            return `
-              <article class="card" ${clickAttr}>
-                <div class="thumb">${imgHtml}</div>
-                <div class="info">
-                  <p class="title">${it.name}</p>
-                  ${it.note ? `<p class="meta">${it.note}</p>` : ``}
-                  <div class="links">
-                    ${[detailsLink, photoLink].filter(Boolean).join("&nbsp; ")}
-                  </div>
-                </div>
-              </article>
-            `;
-          }).join('');
-
-          // List
-          list.innerHTML = items.map(it => {
-            const note = it.note ? ` — ${it.note}` : '';
-            const link = it.link ? ` <a href="${it.link}" target="_blank" rel="noopener">(link)</a>` : '';
-            return `<li><strong>${it.name}</strong>${note}${link}</li>`;
-          }).join('');
-        })
-        .catch(err => {
-          console.error(err);
+      // Try network JSON first with cache-busting
+      const url = 'selections_data.json?v=' + Date.now();
+      fetch(url).then(r => {
+        if (!r.ok) throw new Error('Could not fetch selections_data.json');
+        return r.json();
+      }).then(buildSelections).catch(() => {
+        // Fallback to inline JSON
+        try {
+          const inline = document.getElementById('selections-data').textContent.trim();
+          const items = inline ? JSON.parse(inline) : [];
+          if (!items.length) throw new Error('Inline JSON is empty');
+          buildSelections(items);
+        } catch (err) {
           gallery.innerHTML = `
             <div class="error">
-              Couldn’t load <code>selections_data.json</code>. 
-              Make sure it’s uploaded to the <strong>repo root</strong> (same folder as <code>index.html</code>),
-              then refresh the page.
-            </div>
-          `;
-        });
+              Couldn’t load <code>selections_data.json</code> and no inline data was provided.<br>
+              Either upload <code>selections_data.json</code> to the repo root or paste its JSON into the
+              <code>&lt;script type="application/json" id="selections-data"&gt;</code> tag.
+            </div>`;
+          console.error(err);
+        }
+      });
     });
   </script>
 </head>

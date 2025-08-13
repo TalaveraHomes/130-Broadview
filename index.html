@@ -31,8 +31,7 @@
 
     .pdf-frame { width: 100%; height: 80vh; border: none; background: #fff; box-shadow: 0 0 0 1px #eee inset; }
 
-    .contact-links a,
-    .referral-form button {
+    .contact-links a, .referral-form button {
       display: inline-block; margin: 0.5rem 1rem 0.5rem 0; padding: 0.75rem 1.5rem;
       background: #000050; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;
       transition: background 0.3s; border: 0; cursor: pointer;
@@ -55,13 +54,10 @@
       transition: transform .2s ease, box-shadow .2s ease; cursor: pointer;
     }
     .card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.06); }
-    .card .thumb {
-      width: 100%; height: 160px; background: #f5f2ed; display: flex; align-items: center; justify-content: center;
-    }
+    .card .thumb { width: 100%; height: 160px; background: #f5f2ed; display: flex; align-items: center; justify-content: center; }
     .card img { width: 100%; height: 160px; object-fit: cover; display: block; }
-    .placeholder {
-      font-weight: 700; color: #000050; text-transform: uppercase; font-size: 0.95rem; padding: 0 10px; text-align: center;
-    }
+    .placeholder { font-weight: 700; color: #000050; text-transform: uppercase; font-size: 0.95rem; padding: 0 10px; text-align: center; }
+
     .card .info { padding: 12px 14px 14px; }
     .card .title { font-weight: 700; color: #000050; margin: 0 0 6px; }
     .card .meta { font-size: .95rem; color: #4b4b4b; line-height: 1.4; }
@@ -91,16 +87,25 @@
       const gallery = document.getElementById('selectionsGallery');
       const list = document.getElementById('selectionsList');
 
+      function jpgFallback(path) {
+        if (!path) return "";
+        return path.replace(/\.png$/i, ".jpg"); // use compressed JPGs
+      }
+
       fetch('selections_data.json')
         .then(r => r.json())
         .then(items => {
           // Gallery
           gallery.innerHTML = items.map(it => {
-            const hasImg = it.image && it.image.trim().length > 0;
+            const imgPath = jpgFallback(it.image || "");
+            const hasImg = imgPath.length > 0;
             const imgHtml = hasImg
-              ? `<img loading="lazy" src="${it.image}" alt="${it.name}">`
+              ? `<img loading="lazy" src="${imgPath}" alt="${it.name}">`
               : `<div class="placeholder">${it.name}</div>`;
             const clickAttr = it.link ? `onclick="window.open('${it.link}','_blank','noopener')"` : '';
+            const photoLink = hasImg ? `<a href="${imgPath}" target="_blank" rel="noopener">View Photo</a>` : ``;
+            const detailsLink = it.link ? `<a href="${it.link}" target="_blank" rel="noopener">View Details</a>` : ``;
+
             return `
               <article class="card" ${clickAttr}>
                 <div class="thumb">${imgHtml}</div>
@@ -108,8 +113,7 @@
                   <p class="title">${it.name}</p>
                   ${it.note ? `<p class="meta">${it.note}</p>` : ``}
                   <div class="links">
-                    ${it.link ? `<a href="${it.link}" target="_blank" rel="noopener">View Details</a>` : ``}
-                    ${hasImg ? `&nbsp; <a href="${it.image}" target="_blank" rel="noopener">View Photo</a>` : ``}
+                    ${[detailsLink, photoLink].filter(Boolean).join("&nbsp; ")}
                   </div>
                 </div>
               </article>
@@ -201,5 +205,3 @@
   </footer>
 </body>
 </html>
-
-

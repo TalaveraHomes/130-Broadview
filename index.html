@@ -19,9 +19,8 @@
     }
     header::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,80,.5); }
     header .content { position: relative; z-index: 1; background: rgba(0,0,0,.4); padding: 1rem 2rem; border-radius: 8px; }
-    header img.logo { position: absolute; top: 20px; left: 20px; height: 60px; z-index: 2; }
-    header h1 { font-size: 2.5rem; margin-bottom: .5rem; }
-    header p { font-size: 1.25rem; max-width: 700px; margin: 0 auto; }
+    header a.logo-link { position: absolute; top: 20px; left: 20px; z-index: 2; }
+    header img.logo { height: 100px; }
 
     nav {
       display: flex; flex-wrap: wrap; justify-content: center;
@@ -67,11 +66,9 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Hash routing on load
       const start = location.hash ? location.hash.substring(1) : 'handbook';
       if (document.getElementById(start)) showSection(start);
 
-      // Handle internal section nav via data-section attr
       document.querySelectorAll('a[data-section]').forEach(a => {
         a.addEventListener('click', (e) => {
           e.preventDefault();
@@ -84,7 +81,9 @@
 </head>
 <body>
   <header>
-    <img src="Artboard 1.jpg" alt="Talavera Homes Logo" class="logo">
+    <a href="https://talaverahomes.github.io/130-Broadview/" class="logo-link">
+      <img src="Gold_Talavera_Logo" alt="Talavera Homes Logo" class="logo">
+    </a>
     <div class="content">
       <h1>Welcome to Your New Talavera Home</h1>
       <p>From our family to yours — thank you for choosing Talavera Homes. We're honored to have built the place you'll call home.</p>
@@ -92,7 +91,6 @@
   </header>
 
   <nav>
-    <!-- Internal sections use data-section; Service Request is a normal external href -->
     <a href="#handbook" data-section="handbook">Homeowner Handbook</a>
     <a href="https://www.nationalbuildergroup.com/builder/talavera-homes/service/" target="_self" rel="noopener">Service Request</a>
     <a href="#selections" data-section="selections">Home Selections</a>
@@ -102,7 +100,6 @@
   </nav>
 
   <div class="container">
-    <!-- Handbook -->
     <section id="handbook" class="active">
       <h2>Homeowner Handbook</h2>
       <iframe
@@ -115,20 +112,16 @@
       </p>
     </section>
 
-    <!-- Referral -->
     <section id="referral">
       <h2>Referral Program</h2>
       <p>Love your Talavera Home? Share the experience with friends and family! Refer someone and receive a special thank you when they close on a home with us.</p>
       <p><a href="https://talaverahomes.com/referral-form" target="_blank" rel="noopener">Submit a Referral Here</a></p>
     </section>
 
-    <!-- Selections -->
     <section id="selections"><h2>Home Selections</h2><p>Coming soon.</p></section>
 
-    <!-- Tips -->
     <section id="tips"><h2>Helpful Tips</h2><p>Coming soon.</p></section>
 
-    <!-- Contact -->
     <section id="contact">
       <h2>Contact Us</h2>
       <div class="contact-links">
@@ -147,4 +140,5 @@
   </footer>
 </body>
 </html>
+
 

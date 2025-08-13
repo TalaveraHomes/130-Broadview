@@ -54,9 +54,7 @@
       font-weight: bold;
       transition: background 0.3s;
     }
-    .contact-links a:hover {
-      background: #c0802c;
-    }
+    .contact-links a:hover { background: #c0802c; }
 
     footer { background: #000050; color: #fff; text-align: center; padding: 1rem; }
   </style>
@@ -67,12 +65,21 @@
       if (el) el.classList.add('active');
       if (history.pushState) { history.pushState(null, "", "#" + id); }
     }
-    window.onload = () => {
-      const defaultSection = location.hash ? location.hash.substring(1) : null;
-      if (defaultSection && document.getElementById(defaultSection)) {
-        showSection(defaultSection);
-      }
-    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Hash routing on load
+      const start = location.hash ? location.hash.substring(1) : 'handbook';
+      if (document.getElementById(start)) showSection(start);
+
+      // Handle internal section nav via data-section attr
+      document.querySelectorAll('a[data-section]').forEach(a => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          const id = a.getAttribute('data-section');
+          showSection(id);
+        });
+      });
+    });
   </script>
 </head>
 <body>
@@ -85,15 +92,17 @@
   </header>
 
   <nav>
-    <a href="#handbook" onclick="showSection('handbook')">Homeowner Handbook</a>
-    <a href="https://www.nationalbuildergroup.com/builder/talavera-homes/service/">Service Request</a>
-    <a href="#selections" onclick="showSection('selections')">Home Selections</a>
-    <a href="#tips" onclick="showSection('tips')">Helpful Tips</a>
-    <a href="#referral" onclick="showSection('referral')">Referral Program</a>
-    <a href="#contact" onclick="showSection('contact')">Contact Us</a>
+    <!-- Internal sections use data-section; Service Request is a normal external href -->
+    <a href="#handbook" data-section="handbook">Homeowner Handbook</a>
+    <a href="https://www.nationalbuildergroup.com/builder/talavera-homes/service/" target="_self" rel="noopener">Service Request</a>
+    <a href="#selections" data-section="selections">Home Selections</a>
+    <a href="#tips" data-section="tips">Helpful Tips</a>
+    <a href="#referral" data-section="referral">Referral Program</a>
+    <a href="#contact" data-section="contact">Contact Us</a>
   </nav>
 
   <div class="container">
+    <!-- Handbook -->
     <section id="handbook" class="active">
       <h2>Homeowner Handbook</h2>
       <iframe
@@ -106,15 +115,20 @@
       </p>
     </section>
 
+    <!-- Referral -->
     <section id="referral">
       <h2>Referral Program</h2>
       <p>Love your Talavera Home? Share the experience with friends and family! Refer someone and receive a special thank you when they close on a home with us.</p>
       <p><a href="https://talaverahomes.com/referral-form" target="_blank" rel="noopener">Submit a Referral Here</a></p>
     </section>
 
+    <!-- Selections -->
     <section id="selections"><h2>Home Selections</h2><p>Coming soon.</p></section>
+
+    <!-- Tips -->
     <section id="tips"><h2>Helpful Tips</h2><p>Coming soon.</p></section>
 
+    <!-- Contact -->
     <section id="contact">
       <h2>Contact Us</h2>
       <div class="contact-links">
@@ -122,6 +136,9 @@
         <a href="sms:2109003353">💬 Text Us</a>
         <a href="mailto:service@talavera-homes.com">✉️ Email Us</a>
       </div>
+      <p style="margin-top:1rem; color:#444;">
+        Tip: On desktop, calling or texting links depend on your system’s default apps (e.g., FaceTime, Phone Link, Messages).
+      </p>
     </section>
   </div>
 
@@ -130,3 +147,4 @@
   </footer>
 </body>
 </html>
+

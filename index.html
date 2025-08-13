@@ -116,7 +116,8 @@
   <script>
     function showSection(id) {
       document.querySelectorAll('.container section').forEach(s => s.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active');
     }
     window.onload = () => {
       const defaultSection = location.hash ? location.hash.substring(1) : null;
@@ -136,7 +137,8 @@
   </header>
 
   <nav>
-    <a href="#handbook" onclick="showSection('handbook')">Homeowner Handbook</a>
+    <!-- Uses the original filename with spaces (URL-encoded) -->
+    <a href="Talavera%20Homes%20Homeowner%20Handbook.pdf" target="_blank" rel="noopener">Homeowner Handbook</a>
     <a href="#warranty" onclick="showSection('warranty')">Service Request</a>
     <a href="#selections" onclick="showSection('selections')">Home Selections</a>
     <a href="#tips" onclick="showSection('tips')">Helpful Tips</a>
@@ -148,7 +150,7 @@
     <section id="referral">
       <h2>Referral Program</h2>
       <p>Love your Talavera Home? Share the experience with friends and family! Refer someone and receive a special thank you when they close on a home with us.</p>
-      <p><a href="https://talaverahomes.com/referral-form" target="_blank">Submit a Referral Here</a></p>
+      <p><a href="https://talaverahomes.com/referral-form" target="_blank" rel="noopener">Submit a Referral Here</a></p>
     </section>
     <!-- Other sections unchanged -->
   </div>
@@ -159,6 +161,3 @@
 </body>
 </html>
 
-  </footer>
-</body>
-</html>

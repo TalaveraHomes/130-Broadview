@@ -8,67 +8,112 @@
   <style>
     body {
       font-family: 'Roboto', sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #fffdf9;
-      color: #1f1f1f;
+      margin: 0; padding: 0;
+      background: #fffdf9; color: #1f1f1f;
     }
     header {
-      position: relative;
-      height: 90vh;
+      position: relative; height: 90vh;
       background: url('195410.jpeg') no-repeat center center/cover;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      color: white;
-      flex-direction: column;
+      display: flex; justify-content: center; align-items: center;
+      text-align: center; color: white; flex-direction: column;
     }
-    header::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background-color: rgba(0, 0, 80, 0.5);
-    }
-    header .content {
-      position: relative;
-      z-index: 1;
-      background: rgba(0, 0, 0, 0.4);
-      padding: 1rem 2rem;
-      border-radius: 8px;
-    }
-    header img.logo {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      height: 60px;
-      z-index: 2;
-    }
-    header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-    header p  { font-size: 1.25rem; max-width: 700px; margin: 0 auto; }
+    header::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,80,.5); }
+    header .content { position: relative; z-index: 1; background: rgba(0,0,0,.4); padding: 1rem 2rem; border-radius: 8px; }
+    header img.logo { position: absolute; top: 20px; left: 20px; height: 60px; z-index: 2; }
+    header h1 { font-size: 2.5rem; margin-bottom: .5rem; }
+    header p { font-size: 1.25rem; max-width: 700px; margin: 0 auto; }
 
     nav {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      background: #c0802c;
-      /* Helps keep third-party floating buttons from overlapping */
-      isolation: isolate;
+      display: flex; flex-wrap: wrap; justify-content: center;
+      background: #c0802c; isolation: isolate;
     }
     nav a {
-      color: white;
-      text-decoration: none;
-      padding: 1rem;
-      font-weight: bold;
-      transition: background 0.3s;
+      color: #fff; text-decoration: none; padding: 1rem; font-weight: bold; transition: background .3s;
     }
     nav a:hover { background: #000050; }
 
-    .container section {
-      display: none;
-      padding: 2rem;
-      max-width: 900px;
-      margin: auto;
-    }
+    .container section { display: none; padding: 2rem; max-width: 1100px; margin: auto; }
     .container section.active { display: block; }
-    h2 { color: #000050; }
+    h2 { color: #000050; margin-top: 0; }
+    ul { list-style: none; padding: 0; }
+    ul li { padding: .5rem 0; }
+
+    .pdf-frame {
+      width: 100%; height: 80vh; border: none; background: #fff;
+      box-shadow: 0 0 0 1px #eee inset;
+    }
+
+    footer { background: #000050; color: #fff; text-align: center; padding: 1rem; }
+
+    form input, form textarea {
+      width: 100%; padding: .75rem; margin-bottom: 1rem;
+      border: 1px solid #ccc; border-radius: 4px;
+    }
+    form button { background: #000050; color: #fff; padding: .75rem 1.5rem; border: 0; border-radius: 4px; cursor: pointer; }
+  </style>
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('.container section').forEach(s => s.classList.remove('active'));
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active');
+      if (history.pushState) { history.pushState(null, "", "#" + id); }
+    }
+    window.onload = () => {
+      const defaultSection = location.hash ? location.hash.substring(1) : null;
+      if (defaultSection && document.getElementById(defaultSection)) {
+        showSection(defaultSection);
+      }
+    };
+  </script>
+</head>
+<body>
+  <header>
+    <img src="Artboard 1.jpg" alt="Talavera Homes Logo" class="logo">
+    <div class="content">
+      <h1>Welcome to Your New Talavera Home</h1>
+      <p>From our family to yours — thank you for choosing Talavera Homes. We're honored to have built the place you'll call home.</p>
+    </div>
+  </header>
+
+  <nav>
+    <!-- Open inside the page -->
+    <a href="#handbook" onclick="showSection('handbook')">Homeowner Handbook</a>
+    <a href="#warranty" onclick="showSection('warranty')">Service Request</a>
+    <a href="#selections" onclick="showSection('selections')">Home Selections</a>
+    <a href="#tips" onclick="showSection('tips')">Helpful Tips</a>
+    <a href="#referral" onclick="showSection('referral')">Referral Program</a>
+    <a href="#contact" onclick="showSection('contact')">Contact Us</a>
+  </nav>
+
+  <div class="container">
+    <!-- NEW: in-page PDF viewer -->
+    <section id="handbook" class="active">
+      <h2>Homeowner Handbook</h2>
+      <iframe
+        class="pdf-frame"
+        src="Talavera%20Homes%20Homeowner%20Handbook.pdf#view=FitH&toolbar=1&navpanes=0"
+        title="Talavera Homes Homeowner Handbook"
+      ></iframe>
+      <p style="margin-top:1rem;">
+        Having trouble viewing? <a href="Talavera%20Homes%20Homeowner%20Handbook.pdf">Open the PDF directly</a>.
+      </p>
+    </section>
+
+    <section id="referral">
+      <h2>Referral Program</h2>
+      <p>Love your Talavera Home? Share the experience with friends and family! Refer someone and receive a special thank you when they close on a home with us.</p>
+      <p><a href="https://talaverahomes.com/referral-form" target="_blank" rel="noopener">Submit a Referral Here</a></p>
+    </section>
+
+    <!-- Stub sections you can fill next -->
+    <section id="warranty"><h2>Service Request</h2><p>Coming soon.</p></section>
+    <section id="selections"><h2>Home Selections</h2><p>Coming soon.</p></section>
+    <section id="tips"><h2>Helpful Tips</h2><p>Coming soon.</p></section>
+    <section id="contact"><h2>Contact Us</h2><p>Coming soon.</p></section>
+  </div>
+
+  <footer>
+    &copy; 2025 Talavera Homes. All rights reserved.
+  </footer>
+</body>
+</html>

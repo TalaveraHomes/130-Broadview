@@ -43,13 +43,22 @@
       box-shadow: 0 0 0 1px #eee inset;
     }
 
-    footer { background: #000050; color: #fff; text-align: center; padding: 1rem; }
-
-    form input, form textarea {
-      width: 100%; padding: .75rem; margin-bottom: 1rem;
-      border: 1px solid #ccc; border-radius: 4px;
+    .contact-links a {
+      display: inline-block;
+      margin: 0.5rem 1rem 0.5rem 0;
+      padding: 0.75rem 1.5rem;
+      background: #000050;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background 0.3s;
     }
-    form button { background: #000050; color: #fff; padding: .75rem 1.5rem; border: 0; border-radius: 4px; cursor: pointer; }
+    .contact-links a:hover {
+      background: #c0802c;
+    }
+
+    footer { background: #000050; color: #fff; text-align: center; padding: 1rem; }
   </style>
   <script>
     function showSection(id) {
@@ -76,9 +85,8 @@
   </header>
 
   <nav>
-    <!-- Open inside the page -->
     <a href="#handbook" onclick="showSection('handbook')">Homeowner Handbook</a>
-    <a href="#warranty" onclick="showSection('warranty')">Service Request</a>
+    <a href="https://www.nationalbuildergroup.com/builder/talavera-homes/service/">Service Request</a>
     <a href="#selections" onclick="showSection('selections')">Home Selections</a>
     <a href="#tips" onclick="showSection('tips')">Helpful Tips</a>
     <a href="#referral" onclick="showSection('referral')">Referral Program</a>
@@ -86,7 +94,6 @@
   </nav>
 
   <div class="container">
-    <!-- NEW: in-page PDF viewer -->
     <section id="handbook" class="active">
       <h2>Homeowner Handbook</h2>
       <iframe
@@ -105,11 +112,17 @@
       <p><a href="https://talaverahomes.com/referral-form" target="_blank" rel="noopener">Submit a Referral Here</a></p>
     </section>
 
-    <!-- Stub sections you can fill next -->
-    <section id="warranty"><h2>Service Request</h2><p>Coming soon.</p></section>
     <section id="selections"><h2>Home Selections</h2><p>Coming soon.</p></section>
     <section id="tips"><h2>Helpful Tips</h2><p>Coming soon.</p></section>
-    <section id="contact"><h2>Contact Us</h2><p>Coming soon.</p></section>
+
+    <section id="contact">
+      <h2>Contact Us</h2>
+      <div class="contact-links">
+        <a href="tel:2109003353">📞 Call Us</a>
+        <a href="sms:2109003353">💬 Text Us</a>
+        <a href="mailto:service@talavera-homes.com">✉️ Email Us</a>
+      </div>
+    </section>
   </div>
 
   <footer>

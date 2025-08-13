@@ -27,10 +27,7 @@
     header::before {
       content: "";
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      inset: 0;
       background-color: rgba(0, 0, 80, 0.5);
     }
     header .content {
@@ -47,20 +44,16 @@
       height: 60px;
       z-index: 2;
     }
-    header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-    }
-    header p {
-      font-size: 1.25rem;
-      max-width: 700px;
-      margin: 0 auto;
-    }
+    header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    header p  { font-size: 1.25rem; max-width: 700px; margin: 0 auto; }
+
     nav {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       background: #c0802c;
+      /* Helps keep third-party floating buttons from overlapping */
+      isolation: isolate;
     }
     nav a {
       color: white;
@@ -69,95 +62,13 @@
       font-weight: bold;
       transition: background 0.3s;
     }
-    nav a:hover {
-      background: #000050;
-    }
+    nav a:hover { background: #000050; }
+
     .container section {
       display: none;
       padding: 2rem;
       max-width: 900px;
       margin: auto;
     }
-    .container section.active {
-      display: block;
-    }
-    h2 {
-      color: #000050;
-    }
-    ul {
-      list-style-type: none;
-      padding: 0;
-    }
-    ul li {
-      padding: 0.5rem 0;
-    }
-    footer {
-      background: #000050;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-    }
-    form input, form textarea {
-      width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    form button {
-      background-color: #000050;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-  </style>
-  <script>
-    function showSection(id) {
-      document.querySelectorAll('.container section').forEach(s => s.classList.remove('active'));
-      const el = document.getElementById(id);
-      if (el) el.classList.add('active');
-    }
-    window.onload = () => {
-      const defaultSection = location.hash ? location.hash.substring(1) : null;
-      if (defaultSection && document.getElementById(defaultSection)) {
-        showSection(defaultSection);
-      }
-    };
-  </script>
-</head>
-<body>
-  <header>
-    <img src="Artboard 1.jpg" alt="Talavera Homes Logo" class="logo">
-    <div class="content">
-      <h1>Welcome to Your New Talavera Home</h1>
-      <p>From our family to yours — thank you for choosing Talavera Homes. We're honored to have built the place you'll call home.</p>
-    </div>
-  </header>
-
-  <nav>
-    <!-- Uses the original filename with spaces (URL-encoded) -->
-    <a href="Talavera%20Homes%20Homeowner%20Handbook.pdf" target="_blank" rel="noopener">Homeowner Handbook</a>
-    <a href="#warranty" onclick="showSection('warranty')">Service Request</a>
-    <a href="#selections" onclick="showSection('selections')">Home Selections</a>
-    <a href="#tips" onclick="showSection('tips')">Helpful Tips</a>
-    <a href="#referral" onclick="showSection('referral')">Referral Program</a>
-    <a href="#contact" onclick="showSection('contact')">Contact Us</a>
-  </nav>
-
-  <div class="container">
-    <section id="referral">
-      <h2>Referral Program</h2>
-      <p>Love your Talavera Home? Share the experience with friends and family! Refer someone and receive a special thank you when they close on a home with us.</p>
-      <p><a href="https://talaverahomes.com/referral-form" target="_blank" rel="noopener">Submit a Referral Here</a></p>
-    </section>
-    <!-- Other sections unchanged -->
-  </div>
-
-  <footer>
-    &copy; 2025 Talavera Homes. All rights reserved.
-  </footer>
-</body>
-</html>
-
+    .container section.active { display: block; }
+    h2 { color: #000050; }

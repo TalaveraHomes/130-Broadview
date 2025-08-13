@@ -14,7 +14,7 @@
       text-align: center; color: white; flex-direction: column;
     }
     header::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,80,.25); }
-    header .content { position: relative; z-index: 1; background: rgba(192, 128, 44, 0.6); padding: 1rem 2rem; border-radius: 8px; }
+    header .content { position: relative; z-index: 1; background: rgba(192,128,44,.60); padding: 1rem 2rem; border-radius: 8px; }
     header a.logo-link { position: absolute; top: 20px; left: 20px; z-index: 2; }
     header img.logo { height: 100px; }
 
@@ -38,7 +38,6 @@
     .contact-links a:hover, .referral-form button:hover { background: #c0802c; }
 
     footer { background: #000050; color: #fff; text-align: center; padding: 1rem; }
-
     form input, form textarea { width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
 
     /* --- Selections gallery styles --- */
@@ -119,12 +118,12 @@
       <h2>Home Selections</h2>
       <div class="selections-toolbar">
         <span class="chip">Your chosen finishes & fixtures</span>
-        <span class="muted">Hover a tile to view details from Column B. Click “Details” to open Column C.</span>
+        <span class="muted">Hover a tile to see Column B. Click “Details” to open Column C.</span>
       </div>
 
       <div id="selectionsGallery" class="gallery"></div>
       <ul id="selectionsList" class="selections-list"></ul>
-      <p class="muted" style="margin-top:1rem;">Images can be <code>.jpg</code> or <code>.png</code> in <code>/selections/</code>; the page will try both automatically.</p>
+      <p class="muted" style="margin-top:1rem;">Images can be <code>.jpg</code>, <code>.jpeg</code>, or <code>.png</code> in <code>/selections/</code>. The page tries all automatically, plus smart aliases for common names.</p>
     </section>
 
     <section id="tips"><h2>Helpful Tips</h2><p>Coming soon.</p></section>
@@ -146,87 +145,149 @@
     &copy; 2025 Talavera Homes. All rights reserved.
   </footer>
 
+  <!-- Inline data: if you already pasted your selections_data.json before, keep it here.
+       If empty, the page will try fetching selections_data.json from the repo root. -->
+  <script type="application/json" id="selections-data">[]</script>
+
   <script>
-    // --- Helpers ---
-    function showSection(id) {
+    /* ---------- Helpers ---------- */
+    function showSection(id){
       document.querySelectorAll('.container section').forEach(s => s.classList.remove('active'));
       const el = document.getElementById(id);
       if (el) el.classList.add('active');
       if (history.pushState) { history.pushState(null, "", "#" + id); }
     }
 
-    function slugify(text) {
-      return (text || "")
+    function slugify(t){
+      return (t || "")
         .toLowerCase()
-        .replace(/&/g, ' and ')
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/-+/g, '-')
-        .replace(/^-|-$/g, '');
+        .replace(/&/g,' and ')
+        .replace(/[^a-z0-9]+/g,'-')
+        .replace(/-+/g,'-')
+        .replace(/^-|-$/g,'');
     }
 
-    function imageHtmlFor(item) {
-      // Prefer explicit image path if provided in JSON; otherwise build from Column A name (slug)
-      const base = (item.image && item.image.trim()) ? item.image.trim() : `selections/${slugify(item.name)}.jpg`;
-      // Try .jpg, then fallback to .png automatically
-      const safe = base.endsWith('.jpg') || base.endsWith('.png') ? base : `${base}.jpg`;
-      return `
-        <img loading="lazy" src="${safe}" alt="${item.name}"
-             onerror="if(this.src.endsWith('.jpg')){this.src=this.src.replace('.jpg','.png'); this.onerror=null;}else{this.replaceWith(document.createElement('div')); this.parentElement.querySelector('.overlay').style.opacity=1; this.parentElement.querySelector('.overlay').style.background='rgba(0,0,0,.15)';}">
-      `;
+    /* Smart aliases for tricky names */
+    const NAME_ALIASES = {
+      "fans": ["fans","ceiling-fans","ceiling-fan","fans-ceiling","ceiling_fans"],
+      "exterior-lights": ["exterior-lights","exterior-light","exterior-lighting","outdoor-lights","outdoor-light","outdoor-lighting"],
+      "vanity-lights": ["vanity-lights","vanity-light","bath-vanity-light","bathroom-vanity-light","vanity-fixture","vanity-fixtures"],
+      "dining-light": ["dining-light","dining-room-light","dining-room-fixture","dining-fixture","dining-chandelier"],
+      "exterior-trim-paint": ["exterior-trim-paint","exterior-trim","trim","trim-paint"]
+    };
+
+    /* Build <img> trying explicit path → aliases → .jpg/.jpeg/.png (both cases) */
+    function buildSmartImg(name, explicitPath){
+      const baseSlug = slugify(name);
+      let bases = [];
+
+      if (explicitPath && explicitPath.trim()){
+        // If JSON gives an explicit path, honor it (but still try other extensions)
+        bases = [ explicitPath.trim().replace(/\.(jpg|jpeg|png)$/i,'') ];
+      } else {
+        const aliases = NAME_ALIASES[baseSlug] || [baseSlug];
+        bases = aliases.map(a => 'selections/' + a);
+      }
+
+      const exts = ['.jpg','.jpeg','.png','.JPG','.JPEG','.PNG'];
+
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.alt = name || '';
+
+      let i = 0, j = 0;
+      function tryNext(){
+        if (i >= bases.length) { return failOut(); }
+        if (j >= exts.length) { i++; j = 0; return tryNext(); }
+        img.src = bases[i] + exts[j++];
+      }
+      function failOut(){
+        const holder = document.createElement('div');
+        holder.className = 'placeholder';
+        holder.textContent = name || 'Selection';
+        if (img.parentElement){
+          img.parentElement.replaceChildren(holder);
+        }
+      }
+      img.onerror = tryNext;
+      tryNext();
+      return img;
     }
 
-    function renderSelections(items) {
+    function renderSelections(items){
       const gallery = document.getElementById('selectionsGallery');
       const list    = document.getElementById('selectionsList');
 
-      gallery.innerHTML = items.map(it => {
-        const img = imageHtmlFor(it);
-        // Hover overlay uses Column B (note)
-        const overlayText = it.note ? it.note : '';
-        const details = it.link ? `<a href="${it.link}" target="_blank" rel="noopener">Details</a>` : '';
-        return `
-          <article class="card">
-            <div class="thumb" title="${overlayText.replace(/"/g,'&quot;')}">
-              ${img}
-              <div class="overlay">${overlayText || 'Details'}</div>
-            </div>
-            <div class="info">
-              <p class="title">${it.name || ''}</p>
-              <div class="links">${details}</div>
-            </div>
-          </article>
+      gallery.innerHTML = items.map(it=>{
+        const name = it.name || '';
+        const note = it.note || '';
+        const link = it.link || '';
+        const imgEl = buildSmartImg(name, (it.image||'').trim() || null);
+
+        const thumb = document.createElement('div'); thumb.className='thumb';
+        const overlay = document.createElement('div'); overlay.className='overlay'; overlay.textContent = note || 'Details';
+        thumb.appendChild(imgEl); thumb.appendChild(overlay);
+
+        const info = `
+          <div class="info">
+            <p class="title">${name}</p>
+            <div class="links">${link ? `<a href="${link}" target="_blank" rel="noopener">Details</a>` : ``}</div>
+          </div>
         `;
+
+        const outer = document.createElement('article'); outer.className='card';
+        if (link) { outer.addEventListener('click',()=>window.open(link,'_blank','noopener')); }
+        outer.appendChild(thumb);
+        outer.insertAdjacentHTML('beforeend', info);
+        return outer.outerHTML;
       }).join('');
 
-      // Simple list (Column A + Column B + link)
-      list.innerHTML = items.map(it => {
-        const b = it.note ? ` — ${it.note}` : '';
-        const c = it.link ? ` <a href="${it.link}" target="_blank" rel="noopener">(details)</a>` : '';
-        return `<li><strong>${it.name || ''}</strong>${b}${c}</li>`;
+      // Simple list under gallery
+      list.innerHTML = items.map(it=>{
+        const note = it.note ? ` — ${it.note}` : '';
+        const link = it.link ? ` <a href="${it.link}" target="_blank" rel="noopener">(details)</a>` : '';
+        return `<li><strong>${it.name||''}</strong>${note}${link}</li>`;
       }).join('');
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    function parseInline(){
+      try{
+        const raw = document.getElementById('selections-data').textContent.trim();
+        if (!raw) return null;
+        const json = JSON.parse(raw);
+        return Array.isArray(json) && json.length ? json : null;
+      }catch(e){
+        console.warn('Inline selections JSON invalid:', e);
+        return null;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', ()=>{
       const hash = location.hash ? location.hash.substring(1) : null;
       if (hash && document.getElementById(hash)) showSection(hash);
       document.querySelectorAll('a[data-section]').forEach(a => {
         a.addEventListener('click', (e) => { e.preventDefault(); showSection(a.getAttribute('data-section')); });
       });
 
-      // Load names/notes/links from selections_data.json (Column A/B/C), else fall back to defaults
+      // 1) Prefer inline JSON; 2) else try external; 3) else default names
+      const inline = parseInline();
+      if (inline) { renderSelections(inline); return; }
+
       const DEFAULT_NAMES = [
-        "Exterior Paint","Exterior Trim","Interior Paint","Interior Trim","Stain",
+        "Exterior Paint","Exterior Trim Paint","Interior Paint","Interior Trim","Stain",
         "Carpet","LVP","Wall tile","Backsplash","Appliances",
-        "Cabinets","Countertop","Door Hardware","Lighting Fixtures"
+        "Cabinets","Countertop","Door Hardware","Lighting Fixtures",
+        "Fans","Exterior Lights","Vanity Lights","Dining Light"
       ];
-      const DEFAULTS = DEFAULT_NAMES.map(n => ({ name: n, note: "", link: "", image: "" }));
+      const DEFAULTS = DEFAULT_NAMES.map(n => ({ name:n, note:"", link:"", image:"" }));
 
       fetch('selections_data.json?v=' + Date.now())
         .then(r => r.ok ? r.json() : DEFAULTS)
-        .then(arr => Array.isArray(arr) ? arr : DEFAULTS)
-        .then(renderSelections)
-        .catch(() => renderSelections(DEFAULTS));
+        .then(arr => Array.isArray(arr) && arr.length ? arr : DEFAULTS)
+        .catch(() => DEFAULTS)
+        .then(renderSelections);
     });
   </script>
 </body>
 </html>
+

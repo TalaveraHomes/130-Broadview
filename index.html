@@ -14,6 +14,7 @@
       text-align: center; color: white; flex-direction: column;
     }
     header::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,80,.25); }
+    /* Gold welcome box (exact style you liked) */
     header .content { position: relative; z-index: 1; background: rgba(192,128,44,.60); padding: 1rem 2rem; border-radius: 8px; }
     header a.logo-link { position: absolute; top: 20px; left: 20px; z-index: 2; }
     header img.logo { height: 100px; }
@@ -38,14 +39,15 @@
     .contact-links a:hover, .referral-form button:hover { background: #c0802c; }
 
     footer { background: #000050; color: #fff; text-align: center; padding: 1rem; }
+
     form input, form textarea { width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
 
-    /* --- Selections gallery styles --- */
+    /* --- Selections gallery styles (unchanged) --- */
     .selections-toolbar { display: flex; gap: .75rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
     .chip { display: inline-block; padding: .4rem .8rem; border-radius: 999px; border: 1px solid #e0d7c9; background: #fffaf2; font-weight: 700; color: #000050; }
     .muted { color: #5a5a5a; font-size: .95rem; }
 
-    .gallery { display: grid; grid-template-columns: repeat( auto-fit, minmax(220px, 1fr) ); gap: 16px; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
     .card {
       background: #ffffff; border: 1px solid #eee5d9; border-radius: 12px; overflow: hidden;
       box-shadow: 0 2px 12px rgba(0,0,0,.04); display: flex; flex-direction: column;
@@ -123,7 +125,7 @@
 
       <div id="selectionsGallery" class="gallery"></div>
       <ul id="selectionsList" class="selections-list"></ul>
-      <p class="muted" style="margin-top:1rem;">Images can be <code>.jpg</code>, <code>.jpeg</code>, or <code>.png</code> in <code>/selections/</code>. The page tries all automatically, plus smart aliases for common names.</p>
+      <p class="muted" style="margin-top:1rem;">Images can be <code>.jpg</code>, <code>.jpeg</code>, or <code>.png</code> in <code>/selections/</code>. The page will try all automatically. For five tricky names we also try common aliases.</p>
     </section>
 
     <section id="tips"><h2>Helpful Tips</h2><p>Coming soon.</p></section>
@@ -141,16 +143,35 @@
     </section>
   </div>
 
-  <footer>
-    &copy; 2025 Talavera Homes. All rights reserved.
-  </footer>
+  <footer>&copy; 2025 Talavera Homes. All rights reserved.</footer>
 
-  <!-- Inline data: if you already pasted your selections_data.json before, keep it here.
-       If empty, the page will try fetching selections_data.json from the repo root. -->
-  <script type="application/json" id="selections-data">[]</script>
+  <!-- Inline JSON: paste your full array here (or keep using this starter).
+       Titles = Column A, Hover text = Column B, Details link = Column C. -->
+  <script type="application/json" id="selections-data">
+  [
+    {"name":"Exterior Paint","note":"","link":"","image":""},
+    {"name":"Exterior Trim Paint","note":"","link":"","image":""},
+    {"name":"Interior Paint","note":"","link":"","image":""},
+    {"name":"Interior Trim","note":"","link":"","image":""},
+    {"name":"Stain","note":"","link":"","image":""},
+    {"name":"Carpet","note":"","link":"","image":""},
+    {"name":"LVP","note":"","link":"","image":""},
+    {"name":"Wall tile","note":"","link":"","image":""},
+    {"name":"Backsplash","note":"","link":"","image":""},
+    {"name":"Appliances","note":"","link":"","image":""},
+    {"name":"Cabinets","note":"","link":"","image":""},
+    {"name":"Countertop","note":"","link":"","image":""},
+    {"name":"Door Hardware","note":"","link":"","image":""},
+    {"name":"Lighting Fixtures","note":"","link":"","image":""},
+    {"name":"Fans","note":"","link":"","image":""},
+    {"name":"Exterior Lights","note":"","link":"","image":""},
+    {"name":"Vanity Lights","note":"","link":"","image":""},
+    {"name":"Dining Light","note":"","link":"","image":""}
+  ]
+  </script>
 
   <script>
-    /* ---------- Helpers ---------- */
+    /* ---------- Keep original behavior; add tiny robustness for 5 items + extension fallbacks ---------- */
     function showSection(id){
       document.querySelectorAll('.container section').forEach(s => s.classList.remove('active'));
       const el = document.getElementById(id);
@@ -167,22 +188,22 @@
         .replace(/^-|-$/g,'');
     }
 
-    /* Smart aliases for tricky names */
+    /* Light aliasing ONLY for these names when no explicit image path is given */
     const NAME_ALIASES = {
-      "fans": ["fans","ceiling-fans","ceiling-fan","fans-ceiling","ceiling_fans"],
-      "exterior-lights": ["exterior-lights","exterior-light","exterior-lighting","outdoor-lights","outdoor-light","outdoor-lighting"],
-      "vanity-lights": ["vanity-lights","vanity-light","bath-vanity-light","bathroom-vanity-light","vanity-fixture","vanity-fixtures"],
-      "dining-light": ["dining-light","dining-room-light","dining-room-fixture","dining-fixture","dining-chandelier"],
-      "exterior-trim-paint": ["exterior-trim-paint","exterior-trim","trim","trim-paint"]
+      "fans": ["fans","ceiling-fans","ceiling-fan"],
+      "exterior-lights": ["exterior-lights","exterior-light","exterior-lighting","outdoor-lights","outdoor-lighting"],
+      "vanity-lights": ["vanity-lights","vanity-light","bath-vanity-light","bathroom-vanity-light"],
+      "dining-light": ["dining-light","dining-room-light","dining-room-fixture","dining-fixture"],
+      "exterior-trim-paint": ["exterior-trim-paint","exterior-trim","trim-paint"]
     };
 
-    /* Build <img> trying explicit path → aliases → .jpg/.jpeg/.png (both cases) */
+    /* Build <img> that tries .jpg → .jpeg → .png (both cases); uses aliases only for those 5 names */
     function buildSmartImg(name, explicitPath){
       const baseSlug = slugify(name);
       let bases = [];
 
       if (explicitPath && explicitPath.trim()){
-        // If JSON gives an explicit path, honor it (but still try other extensions)
+        // If JSON gives a path, strip extension and try the common ones
         bases = [ explicitPath.trim().replace(/\.(jpg|jpeg|png)$/i,'') ];
       } else {
         const aliases = NAME_ALIASES[baseSlug] || [baseSlug];
@@ -197,8 +218,8 @@
 
       let i = 0, j = 0;
       function tryNext(){
-        if (i >= bases.length) { return failOut(); }
-        if (j >= exts.length) { i++; j = 0; return tryNext(); }
+        if (i >= bases.length) return failOut();
+        if (j >= exts.length){ i++; j = 0; return tryNext(); }
         img.src = bases[i] + exts[j++];
       }
       function failOut(){
@@ -221,7 +242,11 @@
       gallery.innerHTML = items.map(it=>{
         const name = it.name || '';
         const note = it.note || '';
-        const link = it.link || '';
+        // Normalize link (add https:// if a bare domain is provided)
+        let link = (it.link || '').trim();
+        if (link && !/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(link) && /^[\w.-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(link)) {
+          link = 'https://' + link;
+        }
         const imgEl = buildSmartImg(name, (it.image||'').trim() || null);
 
         const thumb = document.createElement('div'); thumb.className='thumb';
@@ -242,11 +267,16 @@
         return outer.outerHTML;
       }).join('');
 
-      // Simple list under gallery
+      // Simple list beneath the gallery
       list.innerHTML = items.map(it=>{
         const note = it.note ? ` — ${it.note}` : '';
-        const link = it.link ? ` <a href="${it.link}" target="_blank" rel="noopener">(details)</a>` : '';
-        return `<li><strong>${it.name||''}</strong>${note}${link}</li>`;
+        const has = (it.link || '').trim();
+        let link = has;
+        if (has && !/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(has) && /^[\w.-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(has)) {
+          link = 'https://' + has;
+        }
+        const a = link ? ` <a href="${link}" target="_blank" rel="noopener">(details)</a>` : '';
+        return `<li><strong>${it.name||''}</strong>${note}${a}</li>`;
       }).join('');
     }
 
@@ -256,10 +286,7 @@
         if (!raw) return null;
         const json = JSON.parse(raw);
         return Array.isArray(json) && json.length ? json : null;
-      }catch(e){
-        console.warn('Inline selections JSON invalid:', e);
-        return null;
-      }
+      }catch(e){ console.warn('Inline selections JSON invalid:', e); return null; }
     }
 
     document.addEventListener('DOMContentLoaded', ()=>{
@@ -269,23 +296,18 @@
         a.addEventListener('click', (e) => { e.preventDefault(); showSection(a.getAttribute('data-section')); });
       });
 
-      // 1) Prefer inline JSON; 2) else try external; 3) else default names
+      // Use inline JSON (your data) — no fetch dependency
       const inline = parseInline();
       if (inline) { renderSelections(inline); return; }
 
+      // Final fallback if inline is empty
       const DEFAULT_NAMES = [
         "Exterior Paint","Exterior Trim Paint","Interior Paint","Interior Trim","Stain",
         "Carpet","LVP","Wall tile","Backsplash","Appliances",
         "Cabinets","Countertop","Door Hardware","Lighting Fixtures",
         "Fans","Exterior Lights","Vanity Lights","Dining Light"
       ];
-      const DEFAULTS = DEFAULT_NAMES.map(n => ({ name:n, note:"", link:"", image:"" }));
-
-      fetch('selections_data.json?v=' + Date.now())
-        .then(r => r.ok ? r.json() : DEFAULTS)
-        .then(arr => Array.isArray(arr) && arr.length ? arr : DEFAULTS)
-        .catch(() => DEFAULTS)
-        .then(renderSelections);
+      renderSelections(DEFAULT_NAMES.map(n=>({name:n,note:"",link:"",image:""})));
     });
   </script>
 </body>

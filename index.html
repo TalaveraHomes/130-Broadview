@@ -17,7 +17,10 @@
       display: flex; justify-content: center; align-items: center;
       text-align: center; color: white; flex-direction: column;
     }
-    header::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,80,.5); }
+    /* Reduced overlay opacity from .5 to .25 */
+    header::before { 
+      content: ""; position: absolute; inset: 0; background: rgba(0,0,80,.25);
+    }
     header .content { position: relative; z-index: 1; background: rgba(0,0,0,.4); padding: 1rem 2rem; border-radius: 8px; }
     header a.logo-link { position: absolute; top: 20px; left: 20px; z-index: 2; }
     header img.logo { height: 100px; }
@@ -42,7 +45,7 @@
       box-shadow: 0 0 0 1px #eee inset;
     }
 
-    .contact-links a, .referral-form button {
+    .contact-links a {
       display: inline-block;
       margin: 0.5rem 1rem 0.5rem 0;
       padding: 0.75rem 1.5rem;
@@ -52,35 +55,26 @@
       border-radius: 6px;
       font-weight: bold;
       transition: background 0.3s;
-      border: 0;
-      cursor: pointer;
     }
-    .contact-links a:hover, .referral-form button:hover { background: #c0802c; }
-
-    .contact-details {
-      margin-top: 0.75rem;
-      padding: 0.75rem 1rem;
-      background: #f8f6f2;
-      border: 1px solid #e6e1d8;
-      border-radius: 8px;
-      line-height: 1.6;
-    }
-
-    .referral-form label {
-      display: block;
-      font-weight: 700;
-      margin: 0.75rem 0 0.25rem;
-    }
-    .referral-form input, .referral-form textarea {
-      width: 100%;
-      padding: .75rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-sizing: border-box;
-    }
-    .referral-form textarea { min-height: 140px; resize: vertical; }
+    .contact-links a:hover { background: #c0802c; }
 
     footer { background: #000050; color: #fff; text-align: center; padding: 1rem; }
+
+    form input, form textarea {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    form button {
+      background-color: #000050;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   </style>
   <script>
     function showSection(id) {
@@ -91,13 +85,10 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Only show a section if a valid hash is present (no default auto-open)
       const hash = location.hash ? location.hash.substring(1) : null;
       if (hash && document.getElementById(hash)) {
         showSection(hash);
       }
-
-      // Internal section links
       document.querySelectorAll('a[data-section]').forEach(a => {
         a.addEventListener('click', (e) => {
           e.preventDefault();
@@ -105,48 +96,11 @@
           showSection(id);
         });
       });
-
-      // Referral form -> mailto
-      const form = document.getElementById('referralForm');
-      if (form) {
-        form.addEventListener('submit', (e) => {
-          e.preventDefault();
-
-          const yourName   = document.getElementById('yourName').value.trim();
-          const yourAddr   = document.getElementById('yourAddress').value.trim();
-          const refName    = document.getElementById('refName').value.trim();
-          const refPhone   = document.getElementById('refPhone').value.trim();
-          const refEmail   = document.getElementById('refEmail').value.trim();
-          const details    = document.getElementById('details').value.trim();
-
-          const subject = "Client Website Referal";
-          const bodyLines = [
-            "New Client Website Referral",
-            "",
-            "Your Name: " + yourName,
-            "Your Address: " + yourAddr,
-            "",
-            "Referral Name: " + refName,
-            "Referral Phone: " + refPhone,
-            "Referral Email: " + refEmail,
-            "",
-            "Referral Details:",
-            details
-          ];
-
-          const mailto = "mailto:Eric@Talavera-homes.com,Cindystensrudrealtor@gmail.com"
-            + "?subject=" + encodeURIComponent(subject)
-            + "&body=" + encodeURIComponent(bodyLines.join("\n"));
-
-          window.location.href = mailto;
-        });
-      }
     });
   </script>
 </head>
 <body>
   <header>
-    <!-- Clickable logo back to site root -->
     <a href="./" class="logo-link">
       <img src="Gold_Talavera_Logo.png" alt="Talavera Homes Logo" class="logo">
     </a>
@@ -166,77 +120,38 @@
   </nav>
 
   <div class="container">
-    <!-- Handbook -->
     <section id="handbook">
       <h2>Homeowner Handbook</h2>
-      <iframe
-        class="pdf-frame"
-        src="Talavera%20Homes%20Homeowner%20Handbook.pdf#view=FitH&toolbar=1&navpanes=0"
-        title="Talavera Homes Homeowner Handbook"
-      ></iframe>
-      <p style="margin-top:1rem;">
-        Having trouble viewing? <a href="Talavera%20Homes%20Homeowner%20Handbook.pdf">Open the PDF directly</a>.
-      </p>
+      <iframe class="pdf-frame" src="Talavera%20Homes%20Homeowner%20Handbook.pdf#view=FitH&toolbar=1&navpanes=0" title="Talavera Homes Homeowner Handbook"></iframe>
+      <p style="margin-top:1rem;">Having trouble viewing? <a href="Talavera%20Homes%20Homeowner%20Handbook.pdf">Open the PDF directly</a>.</p>
     </section>
 
-    <!-- Referral (now an in-page form that composes an email) -->
     <section id="referral">
       <h2>Referral Program</h2>
-      <p>Know someone who would love a Talavera Home? Share their info below and we’ll take great care of them.</p>
-
-      <form id="referralForm" class="referral-form">
-        <label for="yourName">Your Name *</label>
-        <input id="yourName" name="yourName" type="text" required />
-
-        <label for="yourAddress">Your Address *</label>
-        <input id="yourAddress" name="yourAddress" type="text" required />
-
-        <label for="refName">Referral - Full Name *</label>
-        <input id="refName" name="refName" type="text" required />
-
-        <label for="refPhone">Referral - Phone *</label>
-        <input id="refPhone" name="refPhone" type="tel" required />
-
-        <label for="refEmail">Referral - Email *</label>
-        <input id="refEmail" name="refEmail" type="email" required />
-
-        <label for="details">What are they looking for? (location, features, timing)</label>
-        <textarea id="details" name="details" placeholder="Tell us what they’re looking for and where they are currently shopping."></textarea>
-
+      <form action="mailto:Eric@Talavera-homes.com,Cindystensrudrealtor@gmail.com?subject=Client%20Website%20Referral" method="post" enctype="text/plain">
+        <input type="text" name="Your Name" placeholder="Your Name" required>
+        <input type="text" name="Your Address" placeholder="Your Address" required>
+        <input type="text" name="Referral Name" placeholder="Referral's Name" required>
+        <input type="tel" name="Referral Phone" placeholder="Referral's Phone Number" required>
+        <input type="email" name="Referral Email" placeholder="Referral's Email Address" required>
+        <textarea name="Referral Details" placeholder="Describe what your referral is looking for in a home and where they are currently looking" rows="5" required></textarea>
         <button type="submit">Submit Referral</button>
       </form>
-
-      <p style="margin-top:0.75rem; color:#444;">
-        Note: Submitting opens your email app with the referral pre-filled to send to <strong>Eric@Talavera-homes.com</strong> and
-        <strong>Cindystensrudrealtor@gmail.com</strong>. If your email app does not open, please email those addresses directly.
-      </p>
     </section>
 
-    <!-- Selections -->
     <section id="selections"><h2>Home Selections</h2><p>Coming soon.</p></section>
-
-    <!-- Tips -->
     <section id="tips"><h2>Helpful Tips</h2><p>Coming soon.</p></section>
 
-    <!-- Contact -->
     <section id="contact">
       <h2>Contact Us</h2>
-
       <div class="contact-links">
         <a href="tel:2109003353">📞 Call Us</a>
         <a href="sms:2109003353">💬 Text Us</a>
         <a href="mailto:service@talavera-homes.com">✉️ Email Us</a>
       </div>
-
-      <div class="contact-details">
-        <div><strong>Call:</strong> (210) 900-3353</div>
-        <div><strong>Text:</strong> (210) 900-3353</div>
-        <div><strong>Email:</strong> service@talavera-homes.com</div>
-      </div>
-
-      <p style="margin-top:1rem; color:#444;">
-        Tip: On desktop, calling or texting buttons depend on your system’s default apps (e.g., FaceTime, Phone Link, Messages). You can always use the contact info above directly.
-      </p>
+      <p><strong>Phone:</strong> 210-900-3353<br>
+         <strong>Text:</strong> 210-900-3353<br>
+         <strong>Email:</strong> service@talavera-homes.com</p>
     </section>
   </div>
 
@@ -245,4 +160,3 @@
   </footer>
 </body>
 </html>
-

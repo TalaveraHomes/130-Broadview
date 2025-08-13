@@ -14,7 +14,6 @@
       text-align: center; color: white; flex-direction: column;
     }
     header::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,80,.25); }
-    /* Gold welcome box (0.6 opacity) */
     header .content { position: relative; z-index: 1; background: rgba(192, 128, 44, 0.6); padding: 1rem 2rem; border-radius: 8px; }
     header a.logo-link { position: absolute; top: 20px; left: 20px; z-index: 2; }
     header img.logo { height: 100px; }
@@ -51,109 +50,30 @@
     .card {
       background: #ffffff; border: 1px solid #eee5d9; border-radius: 12px; overflow: hidden;
       box-shadow: 0 2px 12px rgba(0,0,0,.04); display: flex; flex-direction: column;
-      transition: transform .2s ease, box-shadow .2s ease; cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease;
     }
     .card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.06); }
-    .card .thumb { width: 100%; height: 160px; background: #f5f2ed; display: flex; align-items: center; justify-content: center; }
-    .card img { width: 100%; height: 160px; object-fit: cover; display: block; }
+    .thumb { position: relative; width: 100%; height: 160px; background: #f5f2ed; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    /* Hover overlay shows Column B text */
+    .thumb .overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.45);
+      color: #fff; opacity: 0; transition: opacity .2s ease;
+      display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px;
+      font-weight: 700; line-height: 1.35;
+    }
+    .card:hover .overlay { opacity: 1; }
     .placeholder { font-weight: 700; color: #000050; text-transform: uppercase; font-size: 0.95rem; padding: 0 10px; text-align: center; }
 
-    .card .info { padding: 12px 14px 14px; }
-    .card .title { font-weight: 700; color: #000050; margin: 0 0 6px; }
-    .card .meta { font-size: .95rem; color: #4b4b4b; line-height: 1.4; }
-    .card .links { margin-top: 10px; }
-    .card .links a { font-size: .92rem; color: #000050; text-decoration: none; border-bottom: 1px dashed #000050; }
-    .card .links a:hover { color: #c0802c; border-bottom-color: #c0802c; }
+    .info { padding: 12px 14px 14px; }
+    .title { font-weight: 700; color: #000050; margin: 0 0 6px; }
+    .links a { font-size: .92rem; color: #000050; text-decoration: none; border-bottom: 1px dashed #000050; }
+    .links a:hover { color: #c0802c; border-bottom-color: #c0802c; }
 
     .selections-list { margin-top: 1.5rem; border-top: 1px solid #eee5d9; padding-top: 1rem; }
     .selections-list li { padding: .4rem 0; border-bottom: 1px dashed #eee5d9; }
-
-    .loader { color:#5a5a5a; font-size:.95rem; }
-    .error { color:#9b2c2c; background:#fff5f5; border:1px solid #fed7d7; padding:.75rem 1rem; border-radius:8px; }
   </style>
-
-  <!-- Inline selections data (edit paths/notes/links as needed) -->
-  <script type="application/json" id="selections-data">
-  [
-    {"name":"Exterior Paint","note":"","link":"","image":"selections/exterior-paint.jpg"},
-    {"name":"Exterior Trim","note":"","link":"","image":"selections/exterior-trim.jpg"},
-    {"name":"Interior Paint","note":"","link":"","image":"selections/interior-paint.jpg"},
-    {"name":"Interior Trim","note":"","link":"","image":"selections/interior-trim.jpg"},
-    {"name":"Stain","note":"","link":"","image":"selections/stain.jpg"},
-    {"name":"Carpet","note":"","link":"","image":"selections/carpet.jpg"},
-    {"name":"LVP","note":"","link":"","image":"selections/lvp.jpg"},
-    {"name":"Wall tile","note":"","link":"","image":"selections/wall-tile.jpg"},
-    {"name":"Backsplash","note":"","link":"","image":"selections/backsplash.jpg"},
-    {"name":"Appliances","note":"","link":"","image":"selections/appliances.jpg"},
-    {"name":"Cabinets","note":"","link":"","image":"selections/cabinets.jpg"},
-    {"name":"Countertop","note":"","link":"","image":"selections/countertop.jpg"},
-    {"name":"Door Hardware","note":"","link":"","image":"selections/door-hardware.jpg"},
-    {"name":"Lighting Fixtures","note":"","link":"","image":"selections/lighting-fixtures.jpg"}
-  ]
-  </script>
-
-  <script>
-    function showSection(id) {
-      document.querySelectorAll('.container section').forEach(s => s.classList.remove('active'));
-      const el = document.getElementById(id);
-      if (el) el.classList.add('active');
-      if (history.pushState) { history.pushState(null, "", "#" + id); }
-    }
-
-    function buildSelections(items) {
-      const gallery = document.getElementById('selectionsGallery');
-      const list    = document.getElementById('selectionsList');
-
-      // Gallery
-      gallery.innerHTML = items.map(it => {
-        const imgPath = it.image || "";
-        const hasImg  = imgPath.length > 0;
-        const imgHtml = hasImg
-          ? `<img loading="lazy" src="${imgPath}" alt="${it.name}">`
-          : `<div class="placeholder">${it.name}</div>`;
-        const clickAttr   = it.link ? `onclick="window.open('${it.link}','_blank','noopener')"` : '';
-        const photoLink   = hasImg ? `<a href="${imgPath}" target="_blank" rel="noopener">View Photo</a>` : ``;
-        const detailsLink = it.link ? `<a href="${it.link}" target="_blank" rel="noopener">View Details</a>` : ``;
-
-        return `
-          <article class="card" ${clickAttr}>
-            <div class="thumb">${imgHtml}</div>
-            <div class="info">
-              <p class="title">${it.name || ""}</p>
-              ${it.note ? `<p class="meta">${it.note}</p>` : ``}
-              <div class="links">${[detailsLink, photoLink].filter(Boolean).join("&nbsp; ")}</div>
-            </div>
-          </article>
-        `;
-      }).join('');
-
-      // List
-      list.innerHTML = items.map(it => {
-        const note = it.note ? ` — ${it.note}` : '';
-        const link = it.link ? ` <a href="${it.link}" target="_blank" rel="noopener">(link)</a>` : '';
-        return `<li><strong>${it.name || ""}</strong>${note}${link}</li>`;
-      }).join('');
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const hash = location.hash ? location.hash.substring(1) : null;
-      if (hash && document.getElementById(hash)) showSection(hash);
-      document.querySelectorAll('a[data-section]').forEach(a => {
-        a.addEventListener('click', (e) => { e.preventDefault(); showSection(a.getAttribute('data-section')); });
-      });
-
-      // Build from inline JSON (no network dependency)
-      try {
-        const inline = document.getElementById('selections-data').textContent.trim();
-        const items = inline ? JSON.parse(inline) : [];
-        buildSelections(items);
-      } catch (e) {
-        const gallery = document.getElementById('selectionsGallery');
-        gallery.innerHTML = `<div class="error">Selections data is not valid JSON. Please recheck the block with id="selections-data".</div>`;
-        console.error(e);
-      }
-    });
-  </script>
 </head>
 <body>
   <header>
@@ -199,11 +119,12 @@
       <h2>Home Selections</h2>
       <div class="selections-toolbar">
         <span class="chip">Your chosen finishes & fixtures</span>
-        <span class="muted">Photos + quick details.</span>
+        <span class="muted">Hover a tile to view details from Column B. Click “Details” to open Column C.</span>
       </div>
+
       <div id="selectionsGallery" class="gallery"></div>
       <ul id="selectionsList" class="selections-list"></ul>
-      <p class="muted" style="margin-top:1rem;">Tip: Update this section by editing the JSON block with id <code>selections-data</code> or by replacing images in <code>/selections/</code>.</p>
+      <p class="muted" style="margin-top:1rem;">Images can be <code>.jpg</code> or <code>.png</code> in <code>/selections/</code>; the page will try both automatically.</p>
     </section>
 
     <section id="tips"><h2>Helpful Tips</h2><p>Coming soon.</p></section>
@@ -224,5 +145,88 @@
   <footer>
     &copy; 2025 Talavera Homes. All rights reserved.
   </footer>
+
+  <script>
+    // --- Helpers ---
+    function showSection(id) {
+      document.querySelectorAll('.container section').forEach(s => s.classList.remove('active'));
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active');
+      if (history.pushState) { history.pushState(null, "", "#" + id); }
+    }
+
+    function slugify(text) {
+      return (text || "")
+        .toLowerCase()
+        .replace(/&/g, ' and ')
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/-+/g, '-')
+        .replace(/^-|-$/g, '');
+    }
+
+    function imageHtmlFor(item) {
+      // Prefer explicit image path if provided in JSON; otherwise build from Column A name (slug)
+      const base = (item.image && item.image.trim()) ? item.image.trim() : `selections/${slugify(item.name)}.jpg`;
+      // Try .jpg, then fallback to .png automatically
+      const safe = base.endsWith('.jpg') || base.endsWith('.png') ? base : `${base}.jpg`;
+      return `
+        <img loading="lazy" src="${safe}" alt="${item.name}"
+             onerror="if(this.src.endsWith('.jpg')){this.src=this.src.replace('.jpg','.png'); this.onerror=null;}else{this.replaceWith(document.createElement('div')); this.parentElement.querySelector('.overlay').style.opacity=1; this.parentElement.querySelector('.overlay').style.background='rgba(0,0,0,.15)';}">
+      `;
+    }
+
+    function renderSelections(items) {
+      const gallery = document.getElementById('selectionsGallery');
+      const list    = document.getElementById('selectionsList');
+
+      gallery.innerHTML = items.map(it => {
+        const img = imageHtmlFor(it);
+        // Hover overlay uses Column B (note)
+        const overlayText = it.note ? it.note : '';
+        const details = it.link ? `<a href="${it.link}" target="_blank" rel="noopener">Details</a>` : '';
+        return `
+          <article class="card">
+            <div class="thumb" title="${overlayText.replace(/"/g,'&quot;')}">
+              ${img}
+              <div class="overlay">${overlayText || 'Details'}</div>
+            </div>
+            <div class="info">
+              <p class="title">${it.name || ''}</p>
+              <div class="links">${details}</div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      // Simple list (Column A + Column B + link)
+      list.innerHTML = items.map(it => {
+        const b = it.note ? ` — ${it.note}` : '';
+        const c = it.link ? ` <a href="${it.link}" target="_blank" rel="noopener">(details)</a>` : '';
+        return `<li><strong>${it.name || ''}</strong>${b}${c}</li>`;
+      }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const hash = location.hash ? location.hash.substring(1) : null;
+      if (hash && document.getElementById(hash)) showSection(hash);
+      document.querySelectorAll('a[data-section]').forEach(a => {
+        a.addEventListener('click', (e) => { e.preventDefault(); showSection(a.getAttribute('data-section')); });
+      });
+
+      // Load names/notes/links from selections_data.json (Column A/B/C), else fall back to defaults
+      const DEFAULT_NAMES = [
+        "Exterior Paint","Exterior Trim","Interior Paint","Interior Trim","Stain",
+        "Carpet","LVP","Wall tile","Backsplash","Appliances",
+        "Cabinets","Countertop","Door Hardware","Lighting Fixtures"
+      ];
+      const DEFAULTS = DEFAULT_NAMES.map(n => ({ name: n, note: "", link: "", image: "" }));
+
+      fetch('selections_data.json?v=' + Date.now())
+        .then(r => r.ok ? r.json() : DEFAULTS)
+        .then(arr => Array.isArray(arr) ? arr : DEFAULTS)
+        .then(renderSelections)
+        .catch(() => renderSelections(DEFAULTS));
+    });
+  </script>
 </body>
 </html>

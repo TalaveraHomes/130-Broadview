@@ -14,7 +14,6 @@
       text-align: center; color: white; flex-direction: column;
     }
     header::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,80,.25); }
-    /* Gold welcome box (your chosen look) */
     header .content { position: relative; z-index: 1; background: rgba(192,128,44,.60); padding: 1rem 2rem; border-radius: 8px; }
     header a.logo-link { position: absolute; top: 20px; left: 20px; z-index: 2; }
     header img.logo { height: 100px; }
@@ -39,10 +38,9 @@
     .contact-links a:hover, .referral-form button:hover { background: #c0802c; }
 
     footer { background: #000050; color: #fff; text-align: center; padding: 1rem; }
-
     form input, form textarea { width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
 
-    /* --- Selections gallery --- */
+    /* --- Selections gallery styles --- */
     .selections-toolbar { display: flex; gap: .75rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
     .chip { display: inline-block; padding: .4rem .8rem; border-radius: 999px; border: 1px solid #e0d7c9; background: #fffaf2; font-weight: 700; color: #000050; }
     .muted { color: #5a5a5a; font-size: .95rem; }
@@ -57,9 +55,11 @@
     .thumb { position: relative; width: 100%; height: 160px; background: #f5f2ed; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
     .thumb .overlay {
-      position: absolute; inset: 0; background: rgba(0,0,0,.45); color: #fff;
-      opacity: 0; transition: opacity .2s ease; display: flex; align-items: center; justify-content: center;
-      text-align: center; padding: 10px; font-weight: 700; line-height: 1.35;
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.45);
+      color: #fff; opacity: 0; transition: opacity .2s ease;
+      display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px;
+      font-weight: 700; line-height: 1.35;
     }
     .card:hover .overlay { opacity: 1; }
     .placeholder { font-weight: 700; color: #000050; text-transform: uppercase; font-size: 0.95rem; padding: 0 10px; text-align: center; }
@@ -68,6 +68,7 @@
     .title { font-weight: 700; color: #000050; margin: 0 0 6px; }
     .links a { font-size: .92rem; color: #000050; text-decoration: none; border-bottom: 1px dashed #000050; }
     .links a:hover { color: #c0802c; border-bottom-color: #c0802c; }
+
     .selections-list { margin-top: 1.5rem; border-top: 1px solid #eee5d9; padding-top: 1rem; }
     .selections-list li { padding: .4rem 0; border-bottom: 1px dashed #eee5d9; }
   </style>
@@ -116,12 +117,12 @@
       <h2>Home Selections</h2>
       <div class="selections-toolbar">
         <span class="chip">Your chosen finishes & fixtures</span>
-        <span class="muted">Hover a tile to see Column B. Click “Details” to open Column C.</span>
+        <span class="muted">hover over tile to see description and click “Details” for link to product information</span>
       </div>
 
       <div id="selectionsGallery" class="gallery"></div>
       <ul id="selectionsList" class="selections-list"></ul>
-      <p class="muted" style="margin-top:1rem;">Images can be <code>.jpg</code>, <code>.jpeg</code>, or <code>.png</code>. We’ll try all automatically.</p>
+      <p class="muted" style="margin-top:1rem;">Images can be <code>.jpg</code>, <code>.jpeg</code>, or <code>.png</code>. The code tries root and <code>/selections/</code> automatically.</p>
     </section>
 
     <section id="tips"><h2>Helpful Tips</h2><p>Coming soon.</p></section>
@@ -141,7 +142,8 @@
 
   <footer>&copy; 2025 Talavera Homes. All rights reserved.</footer>
 
-  <!-- Inline JSON (corrected) -->
+  <!-- Inline JSON: keep your data here. If any image paths are just filenames (like "carpet.png"),
+       this script now tries both "./carpet.png" and "selections/carpet.png". -->
   <script type="application/json" id="selections-data">[
     { "name": "Exterior Paint", "note": "Sherwin Williams SW7005 Pure White", "link": "https://www.sherwin-williams.com/en-us/color/color-family/white-paint-colors/sw7005-pure-white", "image": "exterior-paint.png" },
     { "name": "Exterior Trim", "note": "Sherwin Williams SW7005 Pure White", "link": "https://www.sherwin-williams.com/en-us/color/color-family/white-paint-colors/sw7005-pure-white", "image": "" },
@@ -158,64 +160,70 @@
     { "name": "Cabinets", "note": "Northpoint- Catalina -Polar White", "link": "https://www.hardwareresources.com/northpoint-cabinets", "image": "cabinets.png" },
     { "name": "Countertop", "note": "", "link": "", "image": "" },
     { "name": "Ceiling Fans", "note": "Progress Trevina II 52\" Fan", "link": "https://progresslighting.com/products/trevina-ii-collection-52in-three-blade-ceiling-fan-p2553?_pos=1&_sid=1bca45a81&_ss=r&variant=46578354749692", "image": "" },
-    { "name": "Vanity Lights", "note": "Progress Merry Matte Black", "link": "https://progresslighting.com/products/merry-collection-three-light-etched-glass-bath-vanity-wall-light-p300329?_pos=2&_sid=6f98a8e1e&_ss=r&variant=46578296324348", "image": "" },
+    { "name": "Vanity Lights", "note": "Progress Merry Matte Black", "link": "https://progresslighting.com/products/merry-collection-three-light-etched-white-glass-bath-vanity-wall-light-p300329?_pos=2&_sid=6f98a8e1e&_ss=r&variant=46578296324348", "image": "" },
     { "name": "Exterior Lights", "note": "Progress Whitmore Matte Black", "link": "https://progresslighting.com/products/whitmire-collection-one-light-with-clear-seeded-glass-outdoor-wall-lantern-light-p560282?variant=46664171356412", "image": "" },
     { "name": "Dining Room Light", "note": "Progress Replay ", "link": "https://progresslighting.com/products/replay-collection-five-light-etched-white-glass-chandelier-light-p4319?variant=46578284855548", "image": "" },
     { "name": "Front Door Hardware", "note": "Schlage Century with Latitude Handle", "link": "https://www.homedepot.com/p/Schlage-Century-Matte-Black-Single-Cylinder-Door-Handleset-with-Latitude-Handle-F60-G-CEN-622-LAT/319938200", "image": "front-door-hardware.png" },
     { "name": "Door Hardware", "note": "Schlage Latitude Matte Black", "link": "https://www.homedepot.com/p/Schlage-Latitude-Matte-Black-Keyed-Entry-Door-Handle-F51A-G-LAT-622/310640472", "image": "door-hardware.png" },
     { "name": "Towel Ring", "note": "Gatco Latitude II -Matte Black", "link": "https://www.homedepot.com/p/Gatco-Latitude-II-Towel-Ring-in-Matte-Black-4242MX/300147451", "image": "towel-ring.png" },
     { "name": "Towel Bar", "note": "Glacier Bay Dorind- Matte Black", "link": "https://www.homedepot.com/p/Glacier-Bay-Dorind-24-in-Towel-Bar-in-Matte-Black-20202-0210H/322302855", "image": "towel-bar.png" },
-    { "name": "Cabinet Hardware", "note": "5-1/6\" Matte Black Cabinet Pull", "link": "https://www.homedepot.com/p/Franklin-Brass-30-Pack-Simple-Bar-5-1-16-in-128-mm-Modern-Matte-Black-Cabinet-Drawer-Pulls-P46642K-FB-B2/321239025", "image": "cabinet-hardware.png" }
+    { "name": "Cabinet Hardware", "note": "5-1/6\" Matte Black Cabinet Pull", "link": "https://www.homedepot.com/p/Franklin-Brass-30-Pack-Simple-Bar-5-1-16-in-128-mm-Modern-Matte-Black-Cabinet-Drawer-Pulls-P46642K-FB-B2/321239025", "image": "cabinets-hardware.png" }
   ]</script>
 
   <script>
-    /* helpers */
+    /* ---------- Helpers ---------- */
     function showSection(id){
       document.querySelectorAll('.container section').forEach(s => s.classList.remove('active'));
       const el = document.getElementById(id);
       if (el) el.classList.add('active');
       if (history.pushState) { history.pushState(null, "", "#" + id); }
     }
+
     function slugify(t){
-      return (t || "").toLowerCase().replace(/&/g,' and ').replace(/[^a-z0-9]+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+      return (t || "")
+        .toLowerCase()
+        .replace(/&/g,' and ')
+        .replace(/[^a-z0-9]+/g,'-')
+        .replace(/-+/g,'-')
+        .replace(/^-|-$/g,'');
     }
 
-    /* light alias only for these names when image path is blank */
-    const NAME_ALIASES = {
-      "dining-room-light": ["dining-room-light","dining-light","dining-room-fixture","dining-fixture"]
-    };
-
-    /* tries .jpg → .jpeg → .png (both cases); uses aliases only when image is blank */
+    /* Build <img> – honors explicit path, plus tries same name under /selections/, then falls back extensions */
     function buildSmartImg(name, explicitPath){
-      const baseSlug = slugify(name);
-      let bases = [];
+      const exts = ['.jpg','.jpeg','.png','.JPG','.JPEG','.PNG'];
 
+      // If explicit path provided, try it (without ext), and the same file under /selections/
       if (explicitPath && explicitPath.trim()){
-        bases = [ explicitPath.trim().replace(/\.(jpg|jpeg|png)$/i,'') ];
-      } else {
-        const aliases = NAME_ALIASES[baseSlug] || [baseSlug];
-        bases = aliases.map(a => 'selections/' + a);
+        const p = explicitPath.trim().replace(/\.(jpg|jpeg|png)$/i,'');
+        const fileOnly = p.split('/').pop();
+        const bases = [p, 'selections/' + fileOnly];
+        return tryBases(bases, exts, name);
       }
 
-      const exts = ['.jpg','.jpeg','.png','.JPG','.JPEG','.PNG'];
+      // Otherwise, try slug in /selections/ first, then root
+      const base = slugify(name);
+      const bases = ['selections/' + base, base];
+      return tryBases(bases, exts, name);
+    }
+
+    function tryBases(bases, exts, alt){
       const img = document.createElement('img');
       img.loading = 'lazy';
-      img.alt = name || '';
-
-      let i=0, j=0;
-      function tryNext(){
-        if (i >= bases.length) return failOut();
-        if (j >= exts.length){ i++; j = 0; return tryNext(); }
+      img.alt = alt || '';
+      let i = 0, j = 0;
+      function next(){
+        if (i >= bases.length) return fail();
+        if (j >= exts.length){ i++; j = 0; return next(); }
         img.src = bases[i] + exts[j++];
       }
-      function failOut(){
+      function fail(){
         const holder = document.createElement('div');
         holder.className = 'placeholder';
-        holder.textContent = name || 'Selection';
+        holder.textContent = alt || 'Selection';
         if (img.parentElement){ img.parentElement.replaceChildren(holder); }
       }
-      img.onerror = tryNext;
-      tryNext();
+      img.onerror = next;
+      next();
       return img;
     }
 
@@ -281,7 +289,7 @@
       const inline = parseInline();
       if (inline) { renderSelections(inline); return; }
 
-      // fallback if inline is ever empty
+      // Fallback if inline is ever empty
       const DEFAULTS = ["Exterior Paint","Exterior Trim","Interior Paint","Interior Trim Paint","Stain","Carpet","LVP","Wall tile","Backsplash","Range","Microwave","Dishwasher","Cabinets","Countertop","Ceiling Fans","Vanity Lights","Exterior Lights","Dining Room Light","Front Door Hardware","Door Hardware","Towel Ring","Towel Bar","Cabinet Hardware"]
         .map(n=>({name:n,note:"",link:"",image:""}));
       renderSelections(DEFAULTS);
@@ -289,3 +297,4 @@
   </script>
 </body>
 </html>
+

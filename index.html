@@ -1,300 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Your Talavera Home</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Roboto', sans-serif; margin: 0; padding: 0; background: #fffdf9; color: #1f1f1f; }
-    header {
-      position: relative; height: 90vh;
-      background: url('195410.jpeg') no-repeat center center/cover;
-      display: flex; justify-content: center; align-items: center;
-      text-align: center; color: white; flex-direction: column;
-    }
-    header::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,80,.25); }
-    header .content { position: relative; z-index: 1; background: rgba(192,128,44,.60); padding: 1rem 2rem; border-radius: 8px; }
-    header a.logo-link { position: absolute; top: 20px; left: 20px; z-index: 2; }
-    header img.logo { height: 100px; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to Your Talavera Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Roboto', sans-serif; margin: 0; padding: 0; background: #fffdf9; color: #1f1f1f; }
+    header {
+      position: relative; height: 90vh;
+      background: url('195410.jpeg') no-repeat center center/cover;
+      display: flex; justify-content: center; align-items: center;
+      text-align: center; color: white; flex-direction: column;
+    }
+    header::before { content: ""; position: absolute; inset: 0; background: rgba(0,0,80,.25); }
+    header .content { position: relative; z-index: 1; background: rgba(192,128,44,.60); padding: 1rem 2rem; border-radius: 8px; }
+    header a.logo-link { position: absolute; top: 20px; left: 20px; z-index: 2; }
+    header img.logo { height: 100px; }
 
-    nav { display: flex; flex-wrap: wrap; justify-content: center; background: #c0802c; isolation: isolate; }
-    nav a { color: #fff; text-decoration: none; padding: 1rem; font-weight: bold; transition: background .3s; }
-    nav a:hover { background: #000050; }
+    nav { display: flex; flex-wrap: wrap; justify-content: center; background: #c0802c; isolation: isolate; }
+    nav a { color: #fff; text-decoration: none; padding: 1rem; font-weight: bold; transition: background .3s; }
+    nav a:hover { background: #000050; }
 
-    .container section { display: none; padding: 2rem; max-width: 1100px; margin: auto; }
-    .container section.active { display: block; }
-    h2 { color: #000050; margin-top: 0; }
-    ul { list-style: none; padding: 0; }
-    ul li { padding: .5rem 0; }
+    .container section { display: none; padding: 2rem; max-width: 1100px; margin: auto; }
+    .container section.active { display: block; }
+    h2 { color: #000050; margin-top: 0; }
+    ul { list-style: none; padding: 0; }
+    ul li { padding: .5rem 0; }
 
-    .pdf-frame { width: 100%; height: 80vh; border: none; background: #fff; box-shadow: 0 0 0 1px #eee inset; }
+    .pdf-frame { width: 100%; height: 80vh; border: none; background: #fff; box-shadow: 0 0 0 1px #eee inset; }
 
-    .contact-links a, .referral-form button {
-      display: inline-block; margin: 0.5rem 1rem 0.5rem 0; padding: 0.75rem 1.5rem;
-      background: #000050; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;
-      transition: background 0.3s; border: 0; cursor: pointer;
-    }
-    .contact-links a:hover, .referral-form button:hover { background: #c0802c; }
+    .contact-links a, .referral-form button {
+      display: inline-block; margin: 0.5rem 1rem 0.5rem 0; padding: 0.75rem 1.5rem;
+      background: #000050; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;
+      transition: background 0.3s; border: 0; cursor: pointer;
+    }
+    .contact-links a:hover, .referral-form button:hover { background: #c0802c; }
 
-    footer { background: #000050; color: #fff; text-align: center; padding: 1rem; }
-    form input, form textarea { width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+    footer { background: #000050; color: #fff; text-align: center; padding: 1rem; }
+    form input, form textarea { width: 100%; padding: 0.75rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
 
-    /* --- Selections gallery styles --- */
-    .selections-toolbar { display: flex; gap: .75rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
-    .chip { display: inline-block; padding: .4rem .8rem; border-radius: 999px; border: 1px solid #e0d7c9; background: #fffaf2; font-weight: 700; color: #000050; }
-    .muted { color: #5a5a5a; font-size: .95rem; }
+    /* --- Selections gallery styles --- */
+    .selections-toolbar { display: flex; gap: .75rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; }
+    .chip { display: inline-block; padding: .4rem .8rem; border-radius: 999px; border: 1px solid #e0d7c9; background: #fffaf2; font-weight: 700; color: #000050; }
+    .muted { color: #5a5a5a; font-size: .95rem; }
 
-    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-    .card {
-      background: #ffffff; border: 1px solid #eee5d9; border-radius: 12px; overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0,0,0,.04); display: flex; flex-direction: column;
-      transition: transform .2s ease, box-shadow .2s ease;
-    }
-    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.06); }
-    .thumb { position: relative; width: 100%; height: 160px; background: #f5f2ed; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .thumb .overlay {
-      position: absolute; inset: 0;
-      background: rgba(0,0,0,.45);
-      color: #fff; opacity: 0; transition: opacity .2s ease;
-      display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px;
-      font-weight: 700; line-height: 1.35;
-    }
-    .card:hover .overlay { opacity: 1; }
-    .placeholder { font-weight: 700; color: #000050; text-transform: uppercase; font-size: 0.95rem; padding: 0 10px; text-align: center; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .card {
+      background: #ffffff; border: 1px solid #eee5d9; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,.04); display: flex; flex-direction: column;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+    .thumb { position: relative; width: 100%; height: 160px; background: #f5f2ed; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .thumb .overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,.45);
+      color: #fff; opacity: 0; transition: opacity .2s ease;
+      display: flex; align-items: center; justify-content: center; text-align: center; padding: 10px;
+      font-weight: 700; line-height: 1.35;
+    }
+    .card:hover .overlay { opacity: 1; }
+    .placeholder { font-weight: 700; color: #000050; text-transform: uppercase; font-size: 0.95rem; padding: 0 10px; text-align: center; }
 
-    .info { padding: 12px 14px 14px; }
-    .title { font-weight: 700; color: #000050; margin: 0 0 6px; }
-    .links a { font-size: .92rem; color: #000050; text-decoration: none; border-bottom: 1px dashed #000050; }
-    .links a:hover { color: #c0802c; border-bottom-color: #c0802c; }
+    .info { padding: 12px 14px 14px; }
+    .title { font-weight: 700; color: #000050; margin: 0 0 6px; }
+    .links a { font-size: .92rem; color: #000050; text-decoration: none; border-bottom: 1px dashed #000050; }
+    .links a:hover { color: #c0802c; border-bottom-color: #c0802c; }
 
-    .selections-list { margin-top: 1.5rem; border-top: 1px solid #eee5d9; padding-top: 1rem; }
-    .selections-list li { padding: .4rem 0; border-bottom: 1px dashed #eee5d9; }
-  </style>
+    .selections-list { margin-top: 1.5rem; border-top: 1px solid #eee5d9; padding-top: 1rem; }
+    .selections-list li { padding: .4rem 0; border-bottom: 1px dashed #eee5d9; }
+  </style>
 </head>
 <body>
-  <header>
-    <a href="./" class="logo-link">
-      <img src="Gold_Talavera_Logo.png" alt="Talavera Homes Logo" class="logo">
-    </a>
-    <div class="content">
-      <h1>Welcome to Your New Talavera Home</h1>
-      <p>From our family to yours — thank you for choosing Talavera Homes. We're honored to have built the place you'll call home.</p>
-    </div>
-  </header>
+  <header>
+    <a href="./" class="logo-link">
+      <img src="Gold_Talavera_Logo.png" alt="Talavera Homes Logo" class="logo">
+    </a>
+    <div class="content">
+      <h1>Welcome to Your New Talavera Home</h1>
+      <p>From our family to yours — thank you for choosing Talavera Homes. We're honored to have built the place you'll call home.</p>
+    </div>
+  </header>
 
-  <nav>
-    <a href="#handbook" data-section="handbook">Homeowner Handbook</a>
-    <a href="https://www.nationalbuildergroup.com/builder/talavera-homes/service/" target="_self" rel="noopener">Service Request</a>
-    <a href="#selections" data-section="selections">Home Selections</a>
-    <a href="#tips" data-section="tips">Helpful Tips</a>
-    <a href="#referral" data-section="referral">Referral Program</a>
-    <a href="#contact" data-section="contact">Contact Us</a>
-  </nav>
+  <nav>
+    <a href="#handbook" data-section="handbook">Homeowner Handbook</a>
+    <a href="https://www.nationalbuildergroup.com/builder/talavera-homes/service/" target="_self" rel="noopener">Service Request</a>
+    <a href="#selections" data-section="selections">Home Selections</a>
+    <a href="#tips" data-section="tips">Helpful Tips</a>
+    <a href="#referral" data-section="referral">Referral Program</a>
+    <a href="#contact" data-section="contact">Contact Us</a>
+  </nav>
 
-  <div class="container">
-    <section id="handbook">
-      <h2>Homeowner Handbook</h2>
-      <iframe class="pdf-frame" src="Talavera%20Homes%20Homeowner%20Handbook.pdf#view=FitH&toolbar=1&navpanes=0" title="Talavera Homes Homeowner Handbook"></iframe>
-      <p style="margin-top:1rem;">Having trouble viewing? <a href="Talavera%20Homes%20Homeowner%20Handbook.pdf">Open the PDF directly</a>.</p>
-    </section>
+  <div class="container">
+    <section id="handbook">
+      <h2>Homeowner Handbook</h2>
+      <iframe class="pdf-frame" src="Talavera%20Homes%20Homeowner%20Handbook.pdf#view=FitH&toolbar=1&navpanes=0" title="Talavera Homes Homeowner Handbook"></iframe>
+      <p style="margin-top:1rem;">Having trouble viewing? <a href="Talavera%20Homes%20Homeowner%20Handbook.pdf">Open the PDF directly</a>.</p>
+    </section>
 
-    <section id="referral">
-      <h2>Referral Program</h2>
-      <form action="mailto:Eric@Talavera-homes.com,Cindystensrudrealtor@gmail.com?subject=Client%20Website%20Referral" method="post" enctype="text/plain" class="referral-form">
-        <input type="text" name="Your Name" placeholder="Your Name" required>
-        <input type="text" name="Your Address" placeholder="Your Address" required>
-        <input type="text" name="Referral Name" placeholder="Referral's Name" required>
-        <input type="tel" name="Referral Phone" placeholder="Referral's Phone Number" required>
-        <input type="email" name="Referral Email" placeholder="Referral's Email Address" required>
-        <textarea name="Referral Details" placeholder="Describe what your referral is looking for in a home and where they are currently looking" rows="5" required></textarea>
-        <button type="submit">Submit Referral</button>
-      </form>
-    </section>
+    <section id="referral">
+      <h2>Referral Program</h2>
+      <form action="mailto:Eric@Talavera-homes.com,Cindystensrudrealtor@gmail.com?subject=Client%20Website%20Referral" method="post" enctype="text/plain" class="referral-form">
+        <input type="text" name="Your Name" placeholder="Your Name" required>
+        <input type="text" name="Your Address" placeholder="Your Address" required>
+        <input type="text" name="Referral Name" placeholder="Referral's Name" required>
+        <input type="tel" name="Referral Phone" placeholder="Referral's Phone Number" required>
+        <input type="email" name="Referral Email" placeholder="Referral's Email Address" required>
+        <textarea name="Referral Details" placeholder="Describe what your referral is looking for in a home and where they are currently looking" rows="5" required></textarea>
+        <button type="submit">Submit Referral</button>
+      </form>
+    </section>
 
-    <section id="selections">
-      <h2>Home Selections</h2>
-      <div class="selections-toolbar">
-        <span class="chip">Your chosen finishes & fixtures</span>
-        <span class="muted">hover over tile to see description and click “Details” for link to product information</span>
-      </div>
+    <section id="selections">
+      <h2>Home Selections</h2>
+      <div class="selections-toolbar">
+        <span class="chip">Your chosen finishes & fixtures</span>
+        <span class="muted">hover over tile to see description and click “Details” for link to product information</span>
+      </div>
 
-      <div id="selectionsGallery" class="gallery"></div>
-      <ul id="selectionsList" class="selections-list"></ul>
-      <p class="muted" style="margin-top:1rem;">Images can be <code>.jpg</code>, <code>.jpeg</code>, or <code>.png</code>. The code tries root and <code>/selections/</code> automatically.</p>
-    </section>
+      <div id="selectionsGallery" class="gallery"></div>
+      <ul id="selectionsList" class="selections-list"></ul>
+      <p class="muted" style="margin-top:1rem;">Images can be <code>.jpg</code>, <code>.jpeg</code>, or <code>.png</code>. The code tries root and <code>/selections/</code> automatically.</p>
+    </section>
 
-    <section id="tips"><h2>Helpful Tips</h2><p>Coming soon.</p></section>
+    <section id="tips"><h2>Helpful Tips</h2><p>Coming soon.</p></section>
 
-    <section id="contact">
-      <h2>Contact Us</h2>
-      <div class="contact-links">
-        <a href="tel:2109003353">📞 Call Us</a>
-        <a href="sms:2109003353">💬 Text Us</a>
-        <a href="mailto:service@talavera-homes.com">✉️ Email Us</a>
-      </div>
-      <p><strong>Phone:</strong> 210-900-3353<br>
-         <strong>Text:</strong> 210-900-3353<br>
-         <strong>Email:</strong> service@talavera-homes.com</p>
-    </section>
-  </div>
+    <section id="contact">
+      <h2>Contact Us</h2>
+      <div class="contact-links">
+        <a href="tel:2109003353">📞 Call Us</a>
+        <a href="sms:2109003353">💬 Text Us</a>
+        <a href="mailto:service@talavera-homes.com">✉️ Email Us</a>
+      </div>
+      <p><strong>Phone:</strong> 210-900-3353<br>
+         <strong>Text:</strong> 210-900-3353<br>
+         <strong>Email:</strong> service@talavera-homes.com</p>
+    </section>
+  </div>
 
-  <footer>&copy; 2025 Talavera Homes. All rights reserved.</footer>
+  <footer>&copy; 2025 Talavera Homes. All rights reserved.</footer>
 
-  <!-- Inline JSON: keep your data here. If any image paths are just filenames (like "carpet.png"),
-       this script now tries both "./carpet.png" and "selections/carpet.png". -->
-  <script type="application/json" id="selections-data">[
-    { "name": "Exterior Paint", "note": "Sherwin Williams SW7005 Pure White", "link": "https://www.sherwin-williams.com/en-us/color/color-family/white-paint-colors/sw7005-pure-white", "image": "exterior-paint.png" },
-    { "name": "Exterior Trim", "note": "Sherwin Williams SW7005 Pure White", "link": "https://www.sherwin-williams.com/en-us/color/color-family/white-paint-colors/sw7005-pure-white", "image": "" },
-    { "name": "Interior Paint", "note": "Sherwin Williams SW7029 Agreeable Gray", "link": "https://www.sherwin-williams.com/en-us/color/color-family/neutral-paint-colors/SW7029-agreeable-gray", "image": "interior-paint.png" },
-    { "name": "Interior Trim Paint", "note": "Sherwin Williams SW7005 Pure White", "link": "https://www.sherwin-williams.com/en-us/color/color-family/white-paint-colors/sw7005-pure-white", "image": "interior-trim-paint.png" },
-    { "name": "Stain", "note": "Sherwin Williams SW3522SS Banyon Brown", "link": "https://www.sherwin-williams.com/homeowners/color/find-and-explore-colors/paint-colors-by-family/SW3522SS-banyan-brown", "image": "stain.png" },
-    { "name": "Carpet", "note": "Shaw Venture Total- Windy City", "link": "https://shawpropertysolutions.com/pdp/carpets/venture-tonal/windy-city/pz056-00521", "image": "carpet.png" },
-    { "name": "LVP", "note": "Shaw Optimum 512C Plus- Spalted Maple", "link": "https://shawbuilderflooringsf.com/pdp/resilient/optimum-512c-plus/spalted-maple/VE210-02084", "image": "lvp.png" },
-    { "name": "Wall tile", "note": "Emser Cabo- Shore", "link": "https://www.emser.com/products/cabo?variant=39461269110897", "image": "Wall-tile.png" },
-    { "name": "Backsplash", "note": "Emser Catch Matte- Ice", "link": "https://www.emser.com/products/catch-matte?variant=39763678232689", "image": "Backsplash.png" },
-    { "name": "Range", "note": "GE 30\" 4 burner SS Range", "link": "https://www.homedepot.com/p/GE-30-in-4-Burner-Element-Free-Standing-Electric-Range-in-Stainless-Steel-w-Stainless-Knobs-GRF40HSVSS/329011820", "image": "range.png" },
-    { "name": "Microwave", "note": "GE 1.6 cu. Ft. SS Microwave", "link": "https://www.homedepot.com/p/GE-1-6-cu-ft-Over-the-Range-Microwave-in-Stainless-Steel-JVM3160RFSS/204394354", "image": "microwave.png" },
-    { "name": "Dishwasher", "note": "GE Built-in Tall Tub SS w/ sanitize", "link": "https://www.homedepot.com/p/GE-24-in-Built-In-Tall-Tub-Top-Control-Stainless-Steel-Dishwasher-w-Sanitize-Dry-Boost-52-dBA-GDT550PYRFS/317761281", "image": "dishwasher.png" },
-    { "name": "Cabinets", "note": "Northpoint- Catalina -Polar White", "link": "https://www.hardwareresources.com/northpoint-cabinets", "image": "cabinets.png" },
-    { "name": "Countertop", "note": "", "link": "", "image": "" },
-    { "name": "Ceiling Fans", "note": "Progress Trevina II 52\" Fan", "link": "https://progresslighting.com/products/trevina-ii-collection-52in-three-blade-ceiling-fan-p2553?_pos=1&_sid=1bca45a81&_ss=r&variant=46578354749692", "image": "" },
-    { "name": "Vanity Lights", "note": "Progress Merry Matte Black", "link": "https://progresslighting.com/products/merry-collection-three-light-etched-white-glass-bath-vanity-wall-light-p300329?_pos=2&_sid=6f98a8e1e&_ss=r&variant=46578296324348", "image": "" },
-    { "name": "Exterior Lights", "note": "Progress Whitmore Matte Black", "link": "https://progresslighting.com/products/whitmire-collection-one-light-with-clear-seeded-glass-outdoor-wall-lantern-light-p560282?variant=46664171356412", "image": "" },
-    { "name": "Dining Room Light", "note": "Progress Replay ", "link": "https://progresslighting.com/products/replay-collection-five-light-etched-white-glass-chandelier-light-p4319?variant=46578284855548", "image": "" },
-    { "name": "Front Door Hardware", "note": "Schlage Century with Latitude Handle", "link": "https://www.homedepot.com/p/Schlage-Century-Matte-Black-Single-Cylinder-Door-Handleset-with-Latitude-Handle-F60-G-CEN-622-LAT/319938200", "image": "front-door-hardware.png" },
-    { "name": "Door Hardware", "note": "Schlage Latitude Matte Black", "link": "https://www.homedepot.com/p/Schlage-Latitude-Matte-Black-Keyed-Entry-Door-Handle-F51A-G-LAT-622/310640472", "image": "door-hardware.png" },
-    { "name": "Towel Ring", "note": "Gatco Latitude II -Matte Black", "link": "https://www.homedepot.com/p/Gatco-Latitude-II-Towel-Ring-in-Matte-Black-4242MX/300147451", "image": "towel-ring.png" },
-    { "name": "Towel Bar", "note": "Glacier Bay Dorind- Matte Black", "link": "https://www.homedepot.com/p/Glacier-Bay-Dorind-24-in-Towel-Bar-in-Matte-Black-20202-0210H/322302855", "image": "towel-bar.png" },
-    { "name": "Cabinet Hardware", "note": "5-1/6\" Matte Black Cabinet Pull", "link": "https://www.homedepot.com/p/Franklin-Brass-30-Pack-Simple-Bar-5-1-16-in-128-mm-Modern-Matte-Black-Cabinet-Drawer-Pulls-P46642K-FB-B2/321239025", "image": "cabinets-hardware.png" }
-  ]</script>
+  <!-- Inline JSON: keep your data here. If any image paths are just filenames (like "carpet.png"),
+       this script now tries both "./carpet.png" and "selections/carpet.png". -->
+  <script type="application/json" id="selections-data">[
+    { "name": "Exterior Paint", "note": "Sherwin Williams SW7005 Pure White", "link": "https://www.sherwin-williams.com/en-us/color/color-family/white-paint-colors/sw7005-pure-white", "image": "exterior-paint.jpg" },
+    { "name": "Exterior Trim", "note": "Sherwin Williams SW7005 Pure White", "link": "https://www.sherwin-williams.com/en-us/color/color-family/white-paint-colors/sw7005-pure-white", "image": "exterior-trim.jpg" },
+    { "name": "Interior Paint", "note": "Sherwin Williams SW7029 Agreeable Gray", "link": "https://www.sherwin-williams.com/en-us/color/color-family/neutral-paint-colors/SW7029-agreeable-gray", "image": "interior-paint.jpg" },
+    { "name": "Interior Trim Paint", "note": "Sherwin Williams SW7005 Pure White", "link": "https://www.sherwin-williams.com/en-us/color/color-family/white-paint-colors/sw7005-pure-white", "image": "interior-trim-paint.jpg" },
+    { "name": "Stain", "note": "Sherwin Williams SW3522SS Banyon Brown", "link": "https://www.sherwin-williams.com/homeowners/color/find-and-explore-colors/paint-colors-by-family/SW3522SS-banyan-brown", "image": "stain.jpg" },
+    { "name": "Carpet", "note": "Shaw Venture Total- Windy City", "link": "https://shawpropertysolutions.com/pdp/carpets/venture-tonal/windy-city/pz056-00521", "image": "carpet.jpg" },
+    { "name": "LVP", "note": "Shaw Optimum 512C Plus- Spalted Maple", "link": "https://shawbuilderflooringsf.com/pdp/resilient/optimum-512c-plus/spalted-maple/VE210-02084", "image": "lvp.jpg" },
+    { "name": "Wall tile", "note": "Emser Cabo- Shore", "link": "https://www.emser.com/products/cabo?variant=39461269110897", "image": "Wall-tile.jpg" },
+    { "name": "Backsplash", "note": "Emser Catch Matte- Ice", "link": "https://www.emser.com/products/catch-matte?variant=39763678232689", "image": "Backsplash.jpg" },
+    { "name": "Range", "note": "GE 30\" 4 burner SS Range", "link": "https://www.homedepot.com/p/GE-30-in-4-Burner-Element-Free-Standing-Electric-Range-in-Stainless-Steel-w-Stainless-Knobs-GRF40HSVSS/329011820", "image": "range.jpg" },
+    { "name": "Microwave", "note": "GE 1.6 cu. Ft. SS Microwave", "link": "https://www.homedepot.com/p/GE-1-6-cu-ft-Over-the-Range-Microwave-in-Stainless-Steel-JVM3160RFSS/204394354", "image": "microwave.jpg" },
+    { "name": "Dishwasher", "note": "GE Built-in Tall Tub SS w/ sanitize", "link": "https://www.homedepot.com/p/GE-24-in-Built-In-Tall-Tub-Top-Control-Stainless-Steel-Dishwasher-w-Sanitize-Dry-Boost-52-dBA-GDT550PYRFS/317761281", "image": "dishwasher.jpg" },
+    { "name": "Cabinets", "note": "Northpoint- Catalina -Polar White", "link": "https://www.hardwareresources.com/northpoint-cabinets", "image": "cabinets.jpg" },
+    { "name": "Countertop", "note": "", "link": "", "image": "" },
+    { "name": "Ceiling Fans", "note": "Progress Trevina II 52\" Fan", "link": "https://progresslighting.com/products/trevina-ii-collection-52in-three-blade-ceiling-fan-p2553?_pos=1&_sid=1bca45a81&_ss=r&variant=46578354749692", "image": "fans.jpg" },
+    { "name": "Vanity Lights", "note": "Progress Merry Matte Black", "link": "https://progresslighting.com/products/merry-collection-three-light-etched-white-glass-bath-vanity-wall-light-p300329?_pos=2&_sid=6f98a8e1e&_ss=r&variant=46578296324348", "image": "vanity-light.jpg" },
+    { "name": "Exterior Lights", "note": "Progress Whitmore Matte Black", "link": "https://progresslighting.com/products/whitmire-collection-one-light-with-clear-seeded-glass-outdoor-wall-lantern-light-p560282?variant=46664171356412", "image": "exterior-lights.jpg" },
+    { "name": "Dining Room Light", "note": "Progress Replay ", "link": "https://progresslighting.com/products/replay-collection-five-light-etched-white-glass-chandelier-light-p4319?variant=46578284855548", "image": "dining-room-light.jpg" },
+    { "name": "Front Door Hardware", "note": "Schlage Century with Latitude Handle", "link": "https://www.homedepot.com/p/Schlage-Century-Matte-Black-Single-Cylinder-Door-Handleset-with-Latitude-Handle-F60-G-CEN-622-LAT/319938200", "image": "front-door-hardware.jpg" },
+    { "name": "Door Hardware", "note": "Schlage Latitude Matte Black", "link": "https://www.homedepot.com/p/Schlage-Latitude-Matte-Black-Keyed-Entry-Door-Handle-F51A-G-LAT-622/310640472", "image": "door-hardware.jpg" },
+    { "name": "Towel Ring", "note": "Gatco Latitude II -Matte Black", "link": "https://www.homedepot.com/p/Gatco-Latitude-II-Towel-Ring-in-Matte-Black-4242MX/300147451", "image": "towel-ring.jpg" },
+    { "name": "Towel Bar", "note": "Glacier Bay Dorind- Matte Black", "link": "https://www.homedepot.com/p/Glacier-Bay-Dorind-24-in-Towel-Bar-in-Matte-Black-20202-0210H/322302855", "image": "towel-bar.jpg" },
+    { "name": "Cabinet Hardware", "note": "5-1/6\" Matte Black Cabinet Pull", "link": "https://www.homedepot.com/p/Franklin-Brass-30-Pack-Simple-Bar-5-1-16-in-128-mm-Modern-Matte-Black-Cabinet-Drawer-Pulls-P46642K-FB-B2/321239025", "image": "cabinet-hardware.jpg" }
+  ]</script>
 
-  <script>
-    /* ---------- Helpers ---------- */
-    function showSection(id){
-      document.querySelectorAll('.container section').forEach(s => s.classList.remove('active'));
-      const el = document.getElementById(id);
-      if (el) el.classList.add('active');
-      if (history.pushState) { history.pushState(null, "", "#" + id); }
-    }
+  <script>
+    /* ---------- Helpers ---------- */
+    function showSection(id){
+      document.querySelectorAll('.container section').forEach(s => s.classList.remove('active'));
+      const el = document.getElementById(id);
+      if (el) el.classList.add('active');
+      if (history.pushState) { history.pushState(null, "", "#" + id); }
+    }
 
-    function slugify(t){
-      return (t || "")
-        .toLowerCase()
-        .replace(/&/g,' and ')
-        .replace(/[^a-z0-9]+/g,'-')
-        .replace(/-+/g,'-')
-        .replace(/^-|-$/g,'');
-    }
+    function slugify(t){
+      return (t || "")
+        .toLowerCase()
+        .replace(/&/g,' and ')
+        .replace(/[^a-z0-9]+/g,'-')
+        .replace(/-+/g,'-')
+        .replace(/^-|-$/g,'');
+    }
 
-    /* Build <img> – honors explicit path, plus tries same name under /selections/, then falls back extensions */
-    function buildSmartImg(name, explicitPath){
-      const exts = ['.jpg','.jpeg','.png','.JPG','.JPEG','.PNG'];
+    /* Build <img> – honors explicit path, plus tries same name under /selections/, then falls back extensions */
+    function buildSmartImg(name, explicitPath){
+      const exts = ['.jpg','.jpeg','.png','.JPG','.JPEG','.PNG'];
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.alt = name || '';
 
-      // If explicit path provided, try it (without ext), and the same file under /selections/
-      if (explicitPath && explicitPath.trim()){
-        const p = explicitPath.trim().replace(/\.(jpg|jpeg|png)$/i,'');
-        const fileOnly = p.split('/').pop();
-        const bases = [p, 'selections/' + fileOnly];
-        return tryBases(bases, exts, name);
-      }
+      // If an explicit path is provided, try that first.
+      if (explicitPath && explicitPath.trim()){
+        const p = explicitPath.trim();
+        const bases = [p, 'selections/' + p];
+        return tryBases(bases, [], name);
+      }
 
-      // Otherwise, try slug in /selections/ first, then root
-      const base = slugify(name);
-      const bases = ['selections/' + base, base];
-      return tryBases(bases, exts, name);
-    }
+      // Otherwise, use slugify logic.
+      const base = slugify(name);
+      const bases = ['selections/' + base, base];
+      return tryBases(bases, exts, name);
+    }
 
-    function tryBases(bases, exts, alt){
-      const img = document.createElement('img');
-      img.loading = 'lazy';
-      img.alt = alt || '';
-      let i = 0, j = 0;
-      function next(){
-        if (i >= bases.length) return fail();
-        if (j >= exts.length){ i++; j = 0; return next(); }
-        img.src = bases[i] + exts[j++];
-      }
-      function fail(){
-        const holder = document.createElement('div');
-        holder.className = 'placeholder';
-        holder.textContent = alt || 'Selection';
-        if (img.parentElement){ img.parentElement.replaceChildren(holder); }
-      }
-      img.onerror = next;
-      next();
-      return img;
-    }
+    function tryBases(bases, exts, alt){
+      const img = document.createElement('img');
+      img.loading = 'lazy';
+      img.alt = alt || '';
+      let i = 0, j = 0;
+      function next(){
+        if (i >= bases.length) return fail();
+        // If explicit path was provided, no extensions were passed.
+        if (exts.length === 0){
+          img.src = bases[i++];
+          return;
+        }
+        // Otherwise, try with extensions.
+        if (j >= exts.length){ i++; j = 0; return next(); }
+        img.src = bases[i] + exts[j++];
+      }
+      function fail(){
+        const holder = document.createElement('div');
+        holder.className = 'placeholder';
+        holder.textContent = alt || 'Selection';
+        if (img.parentElement){ img.parentElement.replaceChildren(holder); }
+      }
+      img.onerror = next;
+      next();
+      return img;
+    }
 
-    function renderSelections(items){
-      const gallery = document.getElementById('selectionsGallery');
-      const list    = document.getElementById('selectionsList');
+    function renderSelections(items){
+      const gallery = document.getElementById('selectionsGallery');
+      const list    = document.getElementById('selectionsList');
 
-      gallery.innerHTML = items.map(it=>{
-        const name = it.name || '';
-        const note = it.note || '';
-        let link = (it.link || '').trim();
-        if (link && !/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(link) && /^[\w.-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(link)) {
-          link = 'https://' + link;
-        }
-        const imgEl = buildSmartImg(name, (it.image||'').trim() || null);
+      gallery.innerHTML = items.map(it=>{
+        const name = it.name || '';
+        const note = it.note || '';
+        let link = (it.link || '').trim();
+        if (link && !/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(link) && /^[\w.-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(link)) {
+          link = 'https://' + link;
+        }
+        const imgEl = buildSmartImg(name, (it.image||'').trim() || null);
 
-        const thumb = document.createElement('div'); thumb.className='thumb';
-        const overlay = document.createElement('div'); overlay.className='overlay'; overlay.textContent = note || 'Details';
-        thumb.appendChild(imgEl); thumb.appendChild(overlay);
+        const thumb = document.createElement('div'); thumb.className='thumb';
+        const overlay = document.createElement('div'); overlay.className='overlay'; overlay.textContent = note || 'Details';
+        thumb.appendChild(imgEl); thumb.appendChild(overlay);
 
-        const info = `
-          <div class="info">
-            <p class="title">${name}</p>
-            <div class="links">${link ? `<a href="${link}" target="_blank" rel="noopener">Details</a>` : ``}</div>
-          </div>
-        `;
+        const info = `
+          <div class="info">
+            <p class="title">${name}</p>
+            <div class="links">${link ? `<a href="${link}" target="_blank" rel="noopener">Details</a>` : ``}</div>
+          </div>
+        `;
 
-        const outer = document.createElement('article'); outer.className='card';
-        if (link) { outer.addEventListener('click',()=>window.open(link,'_blank','noopener')); }
-        outer.appendChild(thumb);
-        outer.insertAdjacentHTML('beforeend', info);
-        return outer.outerHTML;
-      }).join('');
+        const outer = document.createElement('article'); outer.className='card';
+        if (link) { outer.addEventListener('click',()=>window.open(link,'_blank','noopener')); }
+        outer.appendChild(thumb);
+        outer.insertAdjacentHTML('beforeend', info);
+        return outer.outerHTML;
+      }).join('');
 
-      list.innerHTML = items.map(it=>{
-        const note = it.note ? ` — ${it.note}` : '';
-        const has = (it.link || '').trim();
-        let link = has;
-        if (has && !/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(has) && /^[\w.-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(has)) {
-          link = 'https://' + has;
-        }
-        const a = link ? ` <a href="${link}" target="_blank" rel="noopener">(details)</a>` : '';
-        return `<li><strong>${it.name||''}</strong>${note}${a}</li>`;
-      }).join('');
-    }
+      list.innerHTML = items.map(it=>{
+        const note = it.note ? ` — ${it.note}` : '';
+        const has = (it.link || '').trim();
+        let link = has;
+        if (has && !/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(has) && /^[\w.-]+\.[a-zA-Z]{2,}(\/.*)?$/.test(has)) {
+          link = 'https://' + has;
+        }
+        const a = link ? ` <a href="${link}" target="_blank" rel="noopener">(details)</a>` : '';
+        return `<li><strong>${it.name||''}</strong>${note}${a}</li>`;
+      }).join('');
+    }
 
-    function parseInline(){
-      try{
-        const raw = document.getElementById('selections-data').textContent.trim();
-        if (!raw) return null;
-        const json = JSON.parse(raw);
-        return Array.isArray(json) && json.length ? json : null;
-      }catch(e){ console.warn('Inline selections JSON invalid:', e); return null; }
-    }
+    function parseInline(){
+      try{
+        const raw = document.getElementById('selections-data').textContent.trim();
+        if (!raw) return null;
+        const json = JSON.parse(raw);
+        return Array.isArray(json) && json.length ? json : null;
+      }catch(e){ console.warn('Inline selections JSON invalid:', e); return null; }
+    }
 
-    document.addEventListener('DOMContentLoaded', ()=>{
-      const hash = location.hash ? location.hash.substring(1) : null;
-      if (hash && document.getElementById(hash)) showSection(hash);
-      document.querySelectorAll('a[data-section]').forEach(a => {
-        a.addEventListener('click', (e) => { e.preventDefault(); showSection(a.getAttribute('data-section')); });
-      });
+    document.addEventListener('DOMContentLoaded', ()=>{
+      const hash = location.hash ? location.hash.substring(1) : null;
+      if (hash && document.getElementById(hash)) showSection(hash);
+      document.querySelectorAll('a[data-section]').forEach(a => {
+        a.addEventListener('click', (e) => { e.preventDefault(); showSection(a.getAttribute('data-section')); });
+      });
 
-      const inline = parseInline();
-      if (inline) { renderSelections(inline); return; }
+      const inline = parseInline();
+      if (inline) { renderSelections(inline); return; }
 
-      // Fallback if inline is ever empty
-      const DEFAULTS = ["Exterior Paint","Exterior Trim","Interior Paint","Interior Trim Paint","Stain","Carpet","LVP","Wall tile","Backsplash","Range","Microwave","Dishwasher","Cabinets","Countertop","Ceiling Fans","Vanity Lights","Exterior Lights","Dining Room Light","Front Door Hardware","Door Hardware","Towel Ring","Towel Bar","Cabinet Hardware"]
-        .map(n=>({name:n,note:"",link:"",image:""}));
-      renderSelections(DEFAULTS);
-    });
-  </script>
+      // Fallback if inline is ever empty
+      const DEFAULTS = ["Exterior Paint","Exterior Trim","Interior Paint","Interior Trim Paint","Stain","Carpet","LVP","Wall tile","Backsplash","Range","Microwave","Dishwasher","Cabinets","Countertop","Ceiling Fans","Vanity Lights","Exterior Lights","Dining Room Light","Front Door Hardware","Door Hardware","Towel Ring","Towel Bar","Cabinet Hardware"]
+        .map(n=>({name:n,note:"",link:"",image:""}));
+      renderSelections(DEFAULTS);
+    });
+  </script>
 </body>
 </html>
 
